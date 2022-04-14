@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name ="Cornflower" >#FFB8DEEF</color>
+    <color name ="EasternBlue" >#FF219ebc</color>
+    <color name ="DeepBlue" >#FF023047</color>
+    <color name ="SelectiveYellow" >#FFffb703</color>
+    <color name ="FlushOrange" >#FFfb8500</color>
+
+    <color name ="CornflowerD" >#FF0F3546</color>
+    <color name ="EasternBlueL" >#FF68CCE4</color>
+    <color name ="DeepBlueL" >#FF06A0EC</color>
+    <color name ="SelectiveYellowL" >#FFFFD467</color>
+    <color name ="FlushOrangeL" >#FFFFB560</color>
+
+    <color name ="CornflowerDD" >#FF071922</color>
+    <color name ="CornflowerLL" >#FFEBF6FB</color>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+
+</resources>

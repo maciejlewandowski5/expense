@@ -1,0 +1,26 @@
+<resources>
+    <string name="app_name">e</string>
+    <string name="menuButtonDescription">Menu button</string>
+    <string name="currentSpendingsTitle">Group total cash flow</string>
+    <string name="settelmentButton">Settle</string>
+    <string name="tryAgainLaterError">Something went wrong, try again later.</string>
+    <string name="addNewExpense">Add new expense button</string>
+    <string name="expenseTitle">Expense title</string>
+    <string name="date">Date</string>
+    <string name="addParticipantButton">Add participant button</string>
+    <string name="amount">Amount</string>
+    <string name="borowers">Borowers</string>
+    <string name="payers">Payers</string>
+    <string name="genericError">Something went wrong, try again later.</string>
+    <string name="amountInputError">Amount should be positive decimal number</string>
+    <string name="FixInputErrors">Provide proper values</string>
+    <string name="addNewGroup">Add new group</string>
+    <string name="groupName">Group name</string>
+    <string name="user">User</string>
+    <string name="users">Users in group</string>
+    <string name="addUser">Add user to group</string>
+    <string name="payyOff">Settlement between </string>
+    <string name="pay">pay</string>
+    <string name="groupPersonalSettelment">Single payoff summary or individual payments</string>
+    <string name="dots">. . .</string>
+</resources>
