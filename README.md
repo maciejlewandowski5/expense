@@ -7,9 +7,6 @@ Welcome to the Expense project. It's an application allowing for easy and effort
 1. [Technologies & Dependencies](#paragraph1)
 2. [Project setup & Configuration](#paragraph2)
 3. [Project guide](#paragraph3)
-    - [General project architecture](#projectGuide1)
-    - [Build types](#projectGuide2)
-    - [Build flavors](#projectGuide3)
 
 ## Technologies & Dependencies <a name="paragraph1"></a>
 
@@ -24,9 +21,11 @@ Welcome to the Expense project. It's an application allowing for easy and effort
 - Room (v 2.4.2)
 
 ## Project setup & Configuration <a name="paragraph2"></a>
+
 1. Download repository and open it with Android Studio.
 
 ## Project guide <a name="paragraph3"></a>
+
 Expense is a single-module app structured with use of MVVM archtecture pattern. Components are connected with the use od `Dagger + Hilt`. UI layer is based on signle activity, compose navigation. Views are based on compose. Asnychronus operations are performed with `Kotlin Coroutines`. Local storage is build with `SharedPreferences` and `Room`.
 
 The project is divided into multiple packages. Packages reflects specific app feature.
