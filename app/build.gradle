@@ -3,6 +3,8 @@ plugins {
     id 'org.jetbrains.kotlin.android'
     id 'kotlin-kapt'
     id 'dagger.hilt.android.plugin'
+    id 'com.google.gms.google-services'
+    id 'com.google.firebase.crashlytics'
 }
 
 android {
@@ -53,6 +55,8 @@ dependencies {
     implementation 'androidx.hilt:hilt-navigation-compose:1.0.0'
 
     implementation 'com.google.android.material:material:1.5.0'
+    implementation 'com.google.firebase:firebase-analytics-ktx:20.1.2'
+    implementation 'com.google.firebase:firebase-crashlytics-ktx:18.2.9'
     androidTestImplementation "android.arch.persistence.room:testing:1.1.1"
     implementation "com.google.dagger:hilt-android:2.41"
     kapt "com.google.dagger:hilt-android-compiler:2.41"

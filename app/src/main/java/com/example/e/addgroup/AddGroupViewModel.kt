@@ -7,12 +7,17 @@ import androidx.lifecycle.viewModelScope
 import com.example.e.addgroup.view.AddGroupContentContract
 import com.example.e.domain.User
 import com.example.e.logThrowable
+import com.google.firebase.analytics.FirebaseAnalytics
+import com.google.firebase.analytics.ktx.logEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class AddGroupViewModel @Inject constructor(private val addGroupUseCase: AddGroupUseCase) :
+class AddGroupViewModel @Inject constructor(
+    private val analytics: FirebaseAnalytics,
+    private val addGroupUseCase: AddGroupUseCase
+) :
     ViewModel(), AddGroupContentContract {
 
     private val _groupName: MutableLiveData<String> = MutableLiveData("")
@@ -89,6 +94,9 @@ class AddGroupViewModel @Inject constructor(private val addGroupUseCase: AddGrou
             if (_groupName.value != null && _pickedParticipants.value != null && _pickedParticipants.value!!.isNotEmpty()) {
                 try {
                     addGroupUseCase.addGroup(_groupName.value!!, _pickedParticipants.value!!)
+                    analytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT) {
+                        param(FirebaseAnalytics.Param.ITEM_NAME, _groupName.value!!)
+                    }
                     _addGroupEffect.value = AddGroupEffect.GoToMainScreen
                 } catch (e: Throwable) {
                     e.logThrowable(this)

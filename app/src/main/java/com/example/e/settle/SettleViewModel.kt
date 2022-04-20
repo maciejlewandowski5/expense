@@ -1,16 +1,22 @@
 package com.example.e.settle
 
+import android.os.Bundle
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.e.domain.Expense
+import com.google.firebase.analytics.FirebaseAnalytics
+import com.google.firebase.analytics.ktx.logEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class SettleViewModel @Inject constructor(val settleUseCase: SettleUseCase) : ViewModel() {
+class SettleViewModel @Inject constructor(
+    private val analytics: FirebaseAnalytics,
+    private val settleUseCase: SettleUseCase
+) : ViewModel() {
 
     private val _isSettlePolicyASummary: MutableLiveData<Boolean> = MutableLiveData(false)
     val isSettlePolicyASummary: LiveData<Boolean> = _isSettlePolicyASummary
@@ -51,6 +57,18 @@ class SettleViewModel @Inject constructor(val settleUseCase: SettleUseCase) : Vi
                 val expenses =
                     (_settlementExpenses.value as SettlementExpenseState.Success).expenses.toMutableList()
                 expenses.remove(expense)
+                analytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT) {
+                    val e = expenses.map {
+                        Bundle().also { item ->
+                            item.putString(FirebaseAnalytics.Param.ITEM_NAME, it.title)
+                            item.putString(
+                                FirebaseAnalytics.Param.VALUE,
+                                it.totalAmount().toPlainString()
+                            )
+                        }
+                    }.toTypedArray()
+                    Bundle().putParcelableArray(FirebaseAnalytics.Param.ITEMS, e)
+                }
                 _settlementExpenses.value = SettlementExpenseState.Success(expenses)
             }
         }
