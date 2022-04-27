@@ -48,7 +48,7 @@ data class AccountingGroupModel(
     fun toDomain() = AccountingGroup(id = GroupId(id), title = title)
 
     companion object {
-        fun List<AccountingGroupModel>.toDomain() = map { it.toDomain() }
+        fun List<AccountingGroupModel>.toDomain() = AllGroups(map { it.toDomain() })
     }
 }
 

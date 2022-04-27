@@ -13,7 +13,7 @@ data class Expense(
     val title: String,
     val participants: List<Participant>,
     val date: LocalDateTime
-) {
+) : DomainModel {
     fun totalAmount(): BigDecimal =
         participants.map { it.amount }.fold(BigDecimal.ZERO) { acc, amount ->
             acc.add(

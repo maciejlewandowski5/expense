@@ -13,7 +13,7 @@ data class GroupDetails(
     val accountingGroup: AccountingGroup,
     val expenses: List<Expense>,
     val members: List<User>
-) {
+) : DomainModel {
     fun toHeaderCardData(groups: List<AccountingGroup>) = HeaderCardData(
         expenses.sumOf { it.totalAmount() }, DEFAULT_CURRENCY,
         GroupCardData(groups, accountingGroup.id)

@@ -13,7 +13,7 @@ data class Participant(
     val id: Long,
     val user: User,
     val amount: BigDecimal,
-) {
+) : DomainModel {
     fun toParticipantModel(expenseId: Long): ParticipantModel =
         ParticipantModel(id = 0, userId = user.id, expenseId = expenseId, amount = amount)
 
@@ -32,7 +32,7 @@ data class Participant(
 data class User(
     val id: String,
     val name: String
-) {
+) : DomainModel {
     fun toUserModel() = UserModel(id = id, name = name)
 
     fun toMemberModel(groupId: Long) =

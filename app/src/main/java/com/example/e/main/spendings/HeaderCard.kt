@@ -12,25 +12,30 @@ import androidx.compose.ui.unit.dp
 import com.example.e.*
 import com.example.e.domain.AccountingGroup
 import com.example.e.main.MainScreenNavigationContract
+import com.example.e.main.MainViewContract
+import com.example.e.source.SwitchSourceCard
+import com.example.e.source.SwitchSourceCardContract
 import com.example.e.ui.theme.ETheme
 
 @Composable
 fun HeaderCard(
     currentSpendingState: CurrentSpendingState,
     navigation: MainScreenNavigationContract,
-    setCurrentGroup: (AccountingGroup) -> Unit
+    contract: MainViewContract,
+    switchSourceContract: SwitchSourceCardContract
 ) {
-    Surface(
+    Column(
         modifier = Modifier
             .background(MaterialTheme.colors.background)
             .padding(horizontal = 16.dp, vertical = 4.dp)
     ) {
+        SwitchSourceCard(switchSourceContract)
         when (currentSpendingState) {
             is CurrentSpendingState.Success -> {
                 HeaderCardContent(
                     headerCardData = currentSpendingState.headerCardData,
                     navigation = navigation,
-                    setCurrentGroup = setCurrentGroup
+                    contract = contract,
                 )
             }
             is CurrentSpendingState.Loading -> {
@@ -65,8 +70,18 @@ fun DefaultPreview() {
     ETheme {
         HeaderCard(
             CurrentSpendingState.Success(sampleConversation),
-            mainScreenNavigationContract()
-        ) {}
+            mainScreenNavigationContract(),
+            object : MainViewContract {
+                override fun switchSource(isSourceRemote: Boolean) {}
+                override fun setCurrentGroup(accountingGroup: AccountingGroup) {}
+            },
+            object : SwitchSourceCardContract {
+                override fun isSourceRemote() = true
+                override fun switchSource(isSourceRemote: Boolean) {}
+                override fun onSourceSwitchedToTrue() {}
+                override fun onSourceSwitchedToFalse() {}
+            }
+        )
     }
 }
 
@@ -85,8 +100,18 @@ fun LoadingPreview() {
     ETheme {
         HeaderCard(
             CurrentSpendingState.Loading,
-            mainScreenNavigationContract()
-        ) {}
+            mainScreenNavigationContract(),
+            object : MainViewContract {
+                override fun switchSource(isSourceRemote: Boolean) {}
+                override fun setCurrentGroup(accountingGroup: AccountingGroup) {}
+            },
+            object : SwitchSourceCardContract {
+                override fun isSourceRemote() = true
+                override fun switchSource(isSourceRemote: Boolean) {}
+                override fun onSourceSwitchedToTrue() {}
+                override fun onSourceSwitchedToFalse() {}
+            }
+        )
     }
 }
 
@@ -105,8 +130,18 @@ fun ErrorPreview() {
     ETheme {
         HeaderCard(
             CurrentSpendingState.Error,
-            mainScreenNavigationContract()
-        ) {}
+            mainScreenNavigationContract(),
+            object : MainViewContract {
+                override fun switchSource(isSourceRemote: Boolean) {}
+                override fun setCurrentGroup(accountingGroup: AccountingGroup) {}
+            },
+            object : SwitchSourceCardContract {
+                override fun isSourceRemote() = true
+                override fun switchSource(isSourceRemote: Boolean) {}
+                override fun onSourceSwitchedToTrue() {}
+                override fun onSourceSwitchedToFalse() {}
+            }
+        )
     }
 }
 
@@ -116,4 +151,5 @@ private fun mainScreenNavigationContract() = object : MainScreenNavigationContra
     override fun menuAction() {}
     override fun goToSettlement() {}
     override fun goToAddNewGroup() {}
+    override fun goToLogin() {}
 }

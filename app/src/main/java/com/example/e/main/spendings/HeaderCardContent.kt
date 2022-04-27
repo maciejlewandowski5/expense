@@ -14,8 +14,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.example.e.R
-import com.example.e.domain.AccountingGroup
 import com.example.e.main.MainScreenNavigationContract
+import com.example.e.main.MainViewContract
 import com.example.e.main.group.GroupPicker
 
 @Composable
@@ -36,17 +36,18 @@ internal fun ErrorHeader() {
 internal fun HeaderCardContent(
     headerCardData: HeaderCardData,
     navigation: MainScreenNavigationContract,
-    setCurrentGroup: (AccountingGroup) -> Unit
+    contract: MainViewContract
 ) {
     Column(
         modifier = Modifier
             .background(MaterialTheme.colors.background)
             .defaultMinSize(minHeight = 150.dp)
     ) {
+        Spacer(modifier = Modifier.height(8.dp))
         GroupPicker(
             groupCardData = headerCardData.groupCardData,
             navigation::goToAddNewGroup,
-            setCurrentGroup
+            contract::setCurrentGroup
         )
         Spacer(modifier = Modifier.height(8.dp))
         Row(

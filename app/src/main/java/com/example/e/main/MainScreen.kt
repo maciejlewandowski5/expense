@@ -26,9 +26,12 @@ import com.example.e.main.spendings.CurrentSpendingState
 import com.example.e.main.spendings.HeaderCard
 import com.example.e.sampleConversation
 import com.example.e.sampleExpenses
+import com.example.e.source.SwitchSourceCardContract
 import com.example.e.ui.theme.ETheme
+import kotlinx.serialization.ExperimentalSerializationApi
 
 @Composable
+@ExperimentalSerializationApi
 fun MainViewScreen(
     mainViewModel: MainViewModel,
     navigation: MainScreenNavigationContract
@@ -37,11 +40,25 @@ fun MainViewScreen(
         CurrentSpendingState.Loading
     )
     val expensesState by mainViewModel.expensesState.observeAsState(ExpensesState.Loading)
+    val isSourceRemote by mainViewModel.isSourceRemote.observeAsState(false)
     MainViewContent(
         currentSpendingState = currentSpendingState,
         expenses = expensesState,
         navigation = navigation,
-        setCurrentGroup = mainViewModel::setCurrentGroup
+        contract = mainViewModel,
+        switchSourceContract = object : SwitchSourceCardContract {
+            override fun isSourceRemote() = isSourceRemote
+
+            override fun switchSource(isSourceRemote: Boolean) {
+                mainViewModel.switchSource(isSourceRemote)
+            }
+
+            override fun onSourceSwitchedToTrue() {
+                navigation.goToLogin()
+            }
+
+            override fun onSourceSwitchedToFalse() {}
+        }
     )
 }
 
@@ -50,7 +67,8 @@ fun MainViewContent(
     currentSpendingState: CurrentSpendingState,
     expenses: ExpensesState,
     navigation: MainScreenNavigationContract,
-    setCurrentGroup: (AccountingGroup) -> Unit
+    contract: MainViewContract,
+    switchSourceContract: SwitchSourceCardContract
 ) {
     Scaffold(
         floatingActionButton = {
@@ -70,7 +88,8 @@ fun MainViewContent(
                 HeaderCard(
                     currentSpendingState = currentSpendingState,
                     navigation = navigation,
-                    setCurrentGroup = setCurrentGroup
+                    contract = contract,
+                    switchSourceContract = switchSourceContract
                 )
                 Spacer(modifier = Modifier.height(4.dp))
                 Divider()
@@ -102,7 +121,18 @@ fun DefaultPreview() {
                 override fun menuAction() {}
                 override fun goToSettlement() {}
                 override fun goToAddNewGroup() {}
+                override fun goToLogin() {}
+            },
+            object : MainViewContract {
+                override fun switchSource(isSourceRemote: Boolean) {}
+                override fun setCurrentGroup(accountingGroup: AccountingGroup) {}
+            },
+            object : SwitchSourceCardContract {
+                override fun isSourceRemote() = true
+                override fun switchSource(isSourceRemote: Boolean) {}
+                override fun onSourceSwitchedToTrue() {}
+                override fun onSourceSwitchedToFalse() {}
             }
-        ) {}
+        )
     }
 }

@@ -1,6 +1,7 @@
-package com.example.e.data
+package com.example.e.data.repository.local
 
 import androidx.room.*
+import com.example.e.data.*
 import com.example.e.domain.AccountingGroup
 import com.example.e.domain.Participant
 import com.example.e.domain.User
@@ -12,9 +13,10 @@ abstract class ExpenseDao {
     open suspend fun insertExpenseAndParticipants(
         expenseModel: ExpenseModel,
         participants: List<Participant>
-    ) {
+    ): Long {
         val id = insert(expenseModel)
         participants.forEach { insertParticipant(it.toParticipantModel(id)) }
+        return id
     }
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
@@ -67,13 +69,13 @@ interface UserDao {
     suspend fun users(): List<UserModel>
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    suspend fun insert(userModel: UserModel)
+    suspend fun insert(userModel: UserModel): Long
 }
 
 @Dao
 interface MemberDao {
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    suspend fun insert(memberModel: MemberModel)
+    suspend fun insert(memberModel: MemberModel): Long
 }
 
 @Dao

@@ -1,16 +1,18 @@
-package com.example.e
+package com.example.e.modules
 
+import com.google.firebase.analytics.ktx.analytics
+import com.google.firebase.ktx.Firebase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
-import java.time.Clock
 import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-class ClockModule {
+class AnalyticsModule {
+
     @Singleton
     @Provides
-    fun provideClock(): Clock = Clock.systemDefaultZone()
+    fun provideFirebaseAnalytics() = Firebase.analytics
 }

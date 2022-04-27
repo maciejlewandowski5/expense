@@ -10,9 +10,11 @@ import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.analytics.ktx.logEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import kotlinx.serialization.ExperimentalSerializationApi
 import javax.inject.Inject
 
 @HiltViewModel
+@ExperimentalSerializationApi
 class SettleViewModel @Inject constructor(
     private val analytics: FirebaseAnalytics,
     private val settleUseCase: SettleUseCase
