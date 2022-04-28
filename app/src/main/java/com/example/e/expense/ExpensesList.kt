@@ -6,30 +6,44 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Divider
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import com.example.e.DotsPulsing
 import com.example.e.R
 import com.example.e.sampleExpenses
 import com.example.e.ui.theme.ETheme
+import com.google.accompanist.placeholder.material.placeholder
+import com.google.accompanist.swiperefresh.SwipeRefresh
+import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 
 object ExpensesList {
     @Composable
-    fun ExpensesCard(expenses: ExpensesState) {
+    fun ExpensesCard(expenses: ExpensesState, isRefreshing: Boolean, onRefresh: () -> Unit) {
         when (expenses) {
             is ExpensesState.Success -> {
-                LazyColumn {
-                    itemsIndexed(items = expenses.expenses, key = { _, item ->
-                        item.id
-                    }) { index, item ->
-                        Column {
-                            ExpenseCard.ExpenseCard(item, index % 2 == 0)
-                            Divider()
+                SwipeRefresh(
+                    state = rememberSwipeRefreshState(isRefreshing),
+                    onRefresh = { onRefresh() }
+                ) {
+                    LazyColumn {
+                        itemsIndexed(items = expenses.expenses, key = { _, item ->
+                            item.id
+                        }) { index, item ->
+                            Column {
+                                ExpenseCard.ExpenseCard(
+                                    item,
+                                    index % 2 == 0,
+                                )
+                                Divider()
+                            }
                         }
                     }
                 }
@@ -64,7 +78,7 @@ object ExpensesList {
 fun ExpensesPreview() {
     ETheme {
         ExpensesList.ExpensesCard(
-            ExpensesState.Success(sampleExpenses)
-        )
+            ExpensesState.Success(sampleExpenses), true
+        ) {}
     }
 }

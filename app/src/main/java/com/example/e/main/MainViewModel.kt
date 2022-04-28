@@ -31,9 +31,14 @@ class MainViewModel @Inject constructor(
     private val _isSourceRemote: MutableLiveData<Boolean> = MutableLiveData(false)
     val isSourceRemote: LiveData<Boolean> = _isSourceRemote
 
+    private val _isRefreshingExpenses: MutableLiveData<Boolean> = MutableLiveData(false)
+    val isRefreshingExpenses: LiveData<Boolean> = _isRefreshingExpenses
+
     fun fetchExpenses() = viewModelScope.launch {
+        _isRefreshingExpenses.value = true
         useCase.fetchGroupDetails(_currentSpending, _expensesState)
         _isSourceRemote.value = switchSourceUseCase.getSource()
+        _isRefreshingExpenses.value = false
     }
 
     override fun setCurrentGroup(accountingGroup: AccountingGroup) {
@@ -42,6 +47,11 @@ class MainViewModel @Inject constructor(
             _expensesState.value = ExpensesState.Loading
             fetchExpenses()
         }
+    }
+
+    override fun onRefresh() {
+        _isRefreshingExpenses.value = true
+        fetchExpenses()
     }
 
     override fun switchSource(isSourceRemote: Boolean) {

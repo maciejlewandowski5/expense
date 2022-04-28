@@ -30,7 +30,12 @@ import java.time.format.DateTimeFormatter
 
 object ExpenseCard {
     @Composable
-    fun ExpenseCard(expense: Expense, lighterBackground: Boolean, isExpanded: Boolean = false) {
+    fun ExpenseCard(
+        expense: Expense,
+        lighterBackground: Boolean,
+        isExpanded: Boolean = false,
+        modifier: Modifier = Modifier
+    ) {
         val backgroundColor = if (lighterBackground) {
             MaterialTheme.colors.background
         } else {
@@ -39,7 +44,7 @@ object ExpenseCard {
         var expanded by remember { mutableStateOf(isExpanded) }
 
         Surface(
-            modifier = Modifier
+            modifier = modifier
                 .background(backgroundColor)
                 .padding(horizontal = 16.dp, vertical = 4.dp)
                 .clickable { expanded = !expanded }

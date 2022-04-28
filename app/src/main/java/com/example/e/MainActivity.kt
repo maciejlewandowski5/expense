@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.provider.Settings
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.ui.res.stringResource
@@ -30,6 +31,7 @@ class ExpenseApplication : Application()
 @ExperimentalMaterialApi
 @ExperimentalFoundationApi
 @ExperimentalSerializationApi
+@OptIn(ExperimentalAnimationApi::class)
 class MainActivity : AppCompatActivity() {
 
     @Inject

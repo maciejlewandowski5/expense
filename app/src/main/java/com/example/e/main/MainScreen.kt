@@ -41,14 +41,13 @@ fun MainViewScreen(
     )
     val expensesState by mainViewModel.expensesState.observeAsState(ExpensesState.Loading)
     val isSourceRemote by mainViewModel.isSourceRemote.observeAsState(false)
+    val isRefreshingExpenses by mainViewModel.isRefreshingExpenses.observeAsState(false)
     MainViewContent(
         currentSpendingState = currentSpendingState,
         expenses = expensesState,
         navigation = navigation,
         contract = mainViewModel,
         switchSourceContract = object : SwitchSourceCardContract {
-            override fun isSourceRemote() = isSourceRemote
-
             override fun switchSource(isSourceRemote: Boolean) {
                 mainViewModel.switchSource(isSourceRemote)
             }
@@ -59,7 +58,8 @@ fun MainViewScreen(
 
             override fun onSourceSwitchedToFalse() {}
         },
-        isSourceRemote = isSourceRemote
+        isSourceRemote = isSourceRemote,
+        isRefreshingExpenses = isRefreshingExpenses,
     )
 }
 
@@ -70,11 +70,14 @@ fun MainViewContent(
     navigation: MainScreenNavigationContract,
     contract: MainViewContract,
     switchSourceContract: SwitchSourceCardContract,
-    isSourceRemote: Boolean
+    isSourceRemote: Boolean,
+    isRefreshingExpenses: Boolean
 ) {
     Scaffold(
         floatingActionButton = {
-            if (currentSpendingState !is CurrentSpendingState.Success || currentSpendingState.headerCardData.groupCardData.groups.isNotEmpty()) {
+            if (currentSpendingState !is CurrentSpendingState.Success ||
+                currentSpendingState.headerCardData.groupCardData.groups.isNotEmpty()
+            ) {
                 FloatingActionButton(
                     onClick = navigation::goToAddExpense,
                 ) {
@@ -85,21 +88,26 @@ fun MainViewContent(
                 }
             }
         },
-        content = {
+        content = { a ->
             Column(modifier = Modifier.fillMaxSize()) {
                 HeaderCard(
                     currentSpendingState = currentSpendingState,
                     navigation = navigation,
                     contract = contract,
                     switchSourceContract = switchSourceContract,
-                    isSourceRemote = isSourceRemote
+                    isSourceRemote = isSourceRemote,
+                    isRefreshing = isRefreshingExpenses
                 )
                 Spacer(modifier = Modifier.height(4.dp))
                 Divider()
                 Spacer(modifier = Modifier.height(4.dp))
-                ExpensesList.ExpensesCard(expenses = expenses)
+                ExpensesList.ExpensesCard(
+                    expenses = expenses,
+                    isRefreshing = isRefreshingExpenses,
+                    onRefresh = contract::onRefresh
+                )
             }
-        },
+        }
     )
 }
 
@@ -129,13 +137,14 @@ fun DefaultPreview() {
             object : MainViewContract {
                 override fun switchSource(isSourceRemote: Boolean) {}
                 override fun setCurrentGroup(accountingGroup: AccountingGroup) {}
+                override fun onRefresh() {}
             },
             object : SwitchSourceCardContract {
-                override fun isSourceRemote() = true
                 override fun switchSource(isSourceRemote: Boolean) {}
                 override fun onSourceSwitchedToTrue() {}
                 override fun onSourceSwitchedToFalse() {}
             },
+            true,
             true
         )
     }

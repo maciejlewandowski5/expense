@@ -23,7 +23,8 @@ fun HeaderCard(
     navigation: MainScreenNavigationContract,
     contract: MainViewContract,
     switchSourceContract: SwitchSourceCardContract,
-    isSourceRemote: Boolean
+    isSourceRemote: Boolean,
+    isRefreshing: Boolean
 ) {
     Column(
         modifier = Modifier
@@ -37,6 +38,7 @@ fun HeaderCard(
                     headerCardData = currentSpendingState.headerCardData,
                     navigation = navigation,
                     contract = contract,
+                    isRefreshing = isRefreshing
                 )
             }
             is CurrentSpendingState.Loading -> {
@@ -75,14 +77,15 @@ fun DefaultPreview() {
             object : MainViewContract {
                 override fun switchSource(isSourceRemote: Boolean) {}
                 override fun setCurrentGroup(accountingGroup: AccountingGroup) {}
+                override fun onRefresh() {}
             },
             object : SwitchSourceCardContract {
-                override fun isSourceRemote() = true
                 override fun switchSource(isSourceRemote: Boolean) {}
                 override fun onSourceSwitchedToTrue() {}
                 override fun onSourceSwitchedToFalse() {}
             },
-            isSourceRemote = true
+            isSourceRemote = true,
+            true
         )
     }
 }
@@ -106,14 +109,14 @@ fun LoadingPreview() {
             object : MainViewContract {
                 override fun switchSource(isSourceRemote: Boolean) {}
                 override fun setCurrentGroup(accountingGroup: AccountingGroup) {}
+                override fun onRefresh() {}
             },
             object : SwitchSourceCardContract {
-                override fun isSourceRemote() = true
                 override fun switchSource(isSourceRemote: Boolean) {}
                 override fun onSourceSwitchedToTrue() {}
                 override fun onSourceSwitchedToFalse() {}
             },
-            isSourceRemote = true
+            isSourceRemote = true, true
         )
     }
 }
@@ -137,14 +140,14 @@ fun ErrorPreview() {
             object : MainViewContract {
                 override fun switchSource(isSourceRemote: Boolean) {}
                 override fun setCurrentGroup(accountingGroup: AccountingGroup) {}
+                override fun onRefresh() {}
             },
             object : SwitchSourceCardContract {
-                override fun isSourceRemote() = true
                 override fun switchSource(isSourceRemote: Boolean) {}
                 override fun onSourceSwitchedToTrue() {}
                 override fun onSourceSwitchedToFalse() {}
             },
-            isSourceRemote = true
+            isSourceRemote = true, true
         )
     }
 }

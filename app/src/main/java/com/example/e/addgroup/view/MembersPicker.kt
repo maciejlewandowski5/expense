@@ -2,8 +2,7 @@ package com.example.e.addgroup.view
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.lazy.GridCells
-import androidx.compose.foundation.lazy.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -78,19 +77,19 @@ internal fun PickedMembersCard(
     contract: AddGroupContentContract
 ) {
     LazyVerticalGrid(
-        cells = GridCells.Adaptive(100.dp), content = {
-            this.items(count = pickedUsers.size, itemContent = {
-                val user = pickedUsers[it]
-                ParticipantCard(
-                    state = ParticpantCardState(user = user, isSelected = true),
-                    participantClick = {
+        columns = androidx.compose.foundation.lazy.grid.GridCells.Adaptive(100.dp),
+    ) {
+        items(count = pickedUsers.size, itemContent = {
+            val user = pickedUsers[it]
+            ParticipantCard(
+                state = ParticpantCardState(user = user, isSelected = true),
+                participantClick = {
 
-                        contract.unpickUser(user)
-                    },
-                    tileColor = MaterialTheme.colors.primary,
-                    textColor = MaterialTheme.colors.onPrimary
-                )
-            })
-        }
-    )
+                    contract.unpickUser(user)
+                },
+                tileColor = MaterialTheme.colors.primary,
+                textColor = MaterialTheme.colors.onPrimary
+            )
+        })
+    }
 }
