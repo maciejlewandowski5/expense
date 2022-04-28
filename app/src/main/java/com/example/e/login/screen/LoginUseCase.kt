@@ -1,6 +1,6 @@
 package com.example.e.login.screen
 
-import com.example.e.data.fetchObject
+import com.example.e.fetchObject
 import com.example.e.login.remote.LoginRequest
 import com.example.e.login.session.AuthService
 import com.example.e.login.session.SessionStore

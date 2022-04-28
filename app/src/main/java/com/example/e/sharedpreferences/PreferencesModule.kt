@@ -35,7 +35,6 @@ class PreferencesModule {
                 .build(),
             EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
             EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
-
         )
 
     companion object {

@@ -3,12 +3,12 @@ package com.example.e.data.repository.remote
 import android.accounts.AuthenticatorException
 import arrow.core.Validated
 import arrow.core.invalid
-import com.example.e.data.*
-import com.example.e.data.addObject
-import com.example.e.data.fetchList
+import com.example.e.addObject
+import com.example.e.fetchList
 import com.example.e.data.remotemodels.*
 import com.example.e.data.repository.Repository
 import com.example.e.domain.*
+import com.example.e.fetchObject
 import com.example.e.login.session.TokenRepository
 import kotlinx.serialization.ExperimentalSerializationApi
 import java.time.format.DateTimeFormatter

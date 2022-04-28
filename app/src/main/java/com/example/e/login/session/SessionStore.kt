@@ -1,6 +1,6 @@
 package com.example.e.login.session
 
-import com.example.e.data.fetchObject
+import com.example.e.fetchObject
 import com.example.e.login.remote.RefreshRequest
 import com.example.e.sharedpreferences.Preferences
 import kotlinx.coroutines.*
