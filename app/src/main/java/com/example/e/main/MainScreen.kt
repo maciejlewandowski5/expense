@@ -58,7 +58,8 @@ fun MainViewScreen(
             }
 
             override fun onSourceSwitchedToFalse() {}
-        }
+        },
+        isSourceRemote = isSourceRemote
     )
 }
 
@@ -68,7 +69,8 @@ fun MainViewContent(
     expenses: ExpensesState,
     navigation: MainScreenNavigationContract,
     contract: MainViewContract,
-    switchSourceContract: SwitchSourceCardContract
+    switchSourceContract: SwitchSourceCardContract,
+    isSourceRemote: Boolean
 ) {
     Scaffold(
         floatingActionButton = {
@@ -89,7 +91,8 @@ fun MainViewContent(
                     currentSpendingState = currentSpendingState,
                     navigation = navigation,
                     contract = contract,
-                    switchSourceContract = switchSourceContract
+                    switchSourceContract = switchSourceContract,
+                    isSourceRemote = isSourceRemote
                 )
                 Spacer(modifier = Modifier.height(4.dp))
                 Divider()
@@ -132,7 +135,8 @@ fun DefaultPreview() {
                 override fun switchSource(isSourceRemote: Boolean) {}
                 override fun onSourceSwitchedToTrue() {}
                 override fun onSourceSwitchedToFalse() {}
-            }
+            },
+            true
         )
     }
 }

@@ -11,6 +11,8 @@ import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
+import okhttp3.Authenticator
+import okhttp3.EventListener
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -28,6 +30,7 @@ class NetworkModule {
         OkHttpClient.Builder()
             .addInterceptor(HttpLoggingInterceptor().also { it.setLevel(HttpLoggingInterceptor.Level.BODY) })
             .addInterceptor(authInterceptor)
+            .eventListener(object : EventListener() {})
             .build()
 
     @Singleton

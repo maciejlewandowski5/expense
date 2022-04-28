@@ -15,6 +15,7 @@ import com.example.e.R
 
 @Composable
 fun SwitchSourceCard(
+    isSourceRemote: Boolean,
     contract: SwitchSourceCardContract
 ) {
     Row(
@@ -29,7 +30,7 @@ fun SwitchSourceCard(
             overflow = TextOverflow.Clip,
             maxLines = 1
         )
-        Switch(checked = contract.isSourceRemote(), onCheckedChange = {
+        Switch(checked = isSourceRemote, onCheckedChange = {
             contract.switchSource(it)
             if (it) contract.onSourceSwitchedToTrue()
             else contract.onSourceSwitchedToFalse()

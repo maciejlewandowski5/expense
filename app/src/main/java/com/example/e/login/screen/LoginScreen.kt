@@ -27,11 +27,13 @@ fun LoginScreen(viewModel: LoginViewModel, navigateHome: () -> Unit) {
     val userName by viewModel.userName.observeAsState(initial = "")
     val userPassword by viewModel.password.observeAsState(initial = "")
     val loginEffect by viewModel.loginEffect.observeAsState()
+    val isSourceRemote by viewModel.isSourceRemote.observeAsState(initial = true)
 
-    if (loginEffect is LoginEffect.GoToMainScreen) LaunchedEffect(
-        key1 = Unit,
-        block = { navigateHome() }
+    LaunchedEffect(
+        key1 = loginEffect,
+        block = { if (loginEffect is LoginEffect.GoToMainScreen) navigateHome() }
     )
+
     LoginScaffold(
         userName = userName,
         userPassword = userPassword,
@@ -39,7 +41,8 @@ fun LoginScreen(viewModel: LoginViewModel, navigateHome: () -> Unit) {
         loginClick = viewModel::loginClick,
         setUserName = viewModel::setUserName,
         setUserPassword = viewModel::setPassword,
-        switchSourceContract = viewModel
+        switchSourceContract = viewModel,
+        isSourceRemote = isSourceRemote
     )
 }
 
@@ -53,7 +56,8 @@ fun LoginScaffold(
     loginClick: () -> Unit,
     setUserName: (String) -> Unit,
     setUserPassword: (String) -> Unit,
-    switchSourceContract: SwitchSourceCardContract
+    switchSourceContract: SwitchSourceCardContract,
+    isSourceRemote: Boolean
 ) {
 
     Column(
@@ -76,7 +80,8 @@ fun LoginScaffold(
                     loginEffect = loginEffect,
                     setUserName = setUserName,
                     setUserPassword = setUserPassword,
-                    switchSourceContract = switchSourceContract
+                    switchSourceContract = switchSourceContract,
+                    isSourceRemote = isSourceRemote
                 )
             }
         )
@@ -92,14 +97,18 @@ fun LoginContent(
     loginEffect: LoginEffect?,
     setUserName: (String) -> Unit,
     setUserPassword: (String) -> Unit,
-    switchSourceContract: SwitchSourceCardContract
+    switchSourceContract: SwitchSourceCardContract,
+    isSourceRemote: Boolean
 ) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(20.dp),
     ) {
         Box(modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp)) {
-            SwitchSourceCard(switchSourceContract)
+            SwitchSourceCard(
+                isSourceRemote = isSourceRemote,
+                contract = switchSourceContract
+            )
         }
         val (errorMessage: String?, isLoading) = when (loginEffect) {
             is LoginEffect.LoginInProgress -> Pair(null, true)

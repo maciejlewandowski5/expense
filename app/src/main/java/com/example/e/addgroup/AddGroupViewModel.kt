@@ -75,9 +75,14 @@ class AddGroupViewModel @Inject constructor(
 
     private fun addAndPickNewUser(userName: String) = viewModelScope.launch {
         _pickedParticipants.value = _pickedParticipants.value?.toMutableList()?.also {
-            it.add(addGroupUseCase.addUser(userName))
+            if (it.firstOrNull { it.id == userName } == null &&
+                _allUsersState.value is AllUsersState.Success && (_allUsersState.value as AllUsersState.Success).users.firstOrNull { it.id == userName } == null
+            ) {
+                it.add(addGroupUseCase.addUser(userName))
+            }
+
+            _userNameInput.value = ""
         }
-        _userNameInput.value = ""
     }
 
     override fun setGroupName(newGroupName: String) {

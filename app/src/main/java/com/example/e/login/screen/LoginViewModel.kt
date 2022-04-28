@@ -27,6 +27,10 @@ class LoginViewModel @Inject constructor(
     private val _loginEffect: MutableLiveData<LoginEffect> = MutableLiveData(null)
     val loginEffect: LiveData<LoginEffect> = _loginEffect
 
+    private val _isSourceRemote: MutableLiveData<Boolean> =
+        MutableLiveData(switchSourceUseCase.getSource())
+    val isSourceRemote: LiveData<Boolean> = _isSourceRemote
+
     fun setUserName(newUserName: String) {
         _userName.value = newUserName
     }
@@ -49,9 +53,10 @@ class LoginViewModel @Inject constructor(
         }
     }
 
-    override fun isSourceRemote(): Boolean = switchSourceUseCase.getSource()
+    fun isSourceRemote(): Boolean = _isSourceRemote.value == true
 
     override fun switchSource(isSourceRemote: Boolean) {
+        _isSourceRemote.value = isSourceRemote
         viewModelScope.launch {
             switchSourceUseCase.switchSource(isSourceRemote)
         }

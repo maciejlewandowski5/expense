@@ -24,7 +24,9 @@ object ExpensesList {
         when (expenses) {
             is ExpensesState.Success -> {
                 LazyColumn {
-                    itemsIndexed(items = expenses.expenses) { index, item ->
+                    itemsIndexed(items = expenses.expenses, key = { _, item ->
+                        item.id
+                    }) { index, item ->
                         Column {
                             ExpenseCard.ExpenseCard(item, index % 2 == 0)
                             Divider()

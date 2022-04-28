@@ -5,6 +5,9 @@ import androidx.compose.animation.Crossfade
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.Orientation
+import androidx.compose.foundation.gestures.ScrollableState
+import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
@@ -40,36 +43,48 @@ object ExpenseCard {
                 .background(backgroundColor)
                 .padding(horizontal = 16.dp, vertical = 4.dp)
                 .clickable { expanded = !expanded }
+                .scrollable(
+                    ScrollableState { it },
+                    Orientation.Horizontal,
+                    enabled = true,
+                    reverseDirection = false
+                )
         ) {
             Row(
                 modifier = Modifier
                     .background(backgroundColor)
                     .fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
             ) {
-                Column(
+                Row(
                     modifier = Modifier
-                        .align(alignment = Alignment.CenterVertically)
-                        .animateContentSize()
-                        .fillMaxWidth(0.6f)
-                ) { Title(expense, expanded) }
-                Column(modifier = Modifier.align(alignment = Alignment.CenterVertically)) {
-                    Text(
-                        text = expense.date.format(
-                            DateTimeFormatter.ISO_DATE
-                        ),
-                        style = MaterialTheme.typography.caption,
-                        modifier = Modifier.align(
-                            alignment = Alignment.End
+                        .background(backgroundColor)
+                        .fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                ) {
+                    Column(
+                        modifier = Modifier
+                            .align(alignment = Alignment.CenterVertically)
+                            .animateContentSize()
+                            .fillMaxWidth(0.6f)
+                    ) { Title(expense, expanded) }
+                    Column(modifier = Modifier.align(alignment = Alignment.CenterVertically)) {
+                        Text(
+                            text = expense.date.format(
+                                DateTimeFormatter.ISO_DATE
+                            ),
+                            style = MaterialTheme.typography.caption,
+                            modifier = Modifier.align(
+                                alignment = Alignment.End
+                            )
                         )
-                    )
-                    Text(
-                        text = expense.totalAmount().toPlainString(),
-                        style = MaterialTheme.typography.h5,
-                        modifier = Modifier.align(alignment = Alignment.End),
-                        overflow = TextOverflow.Ellipsis,
-                        maxLines = if (!expanded) 1 else Int.MAX_VALUE
-                    )
+                        Text(
+                            text = expense.totalAmount().toPlainString(),
+                            style = MaterialTheme.typography.h5,
+                            modifier = Modifier.align(alignment = Alignment.End),
+                            overflow = TextOverflow.Ellipsis,
+                            maxLines = if (!expanded) 1 else Int.MAX_VALUE
+                        )
+                    }
                 }
             }
         }

@@ -55,8 +55,7 @@ class MainActivity : AppCompatActivity() {
                     ::showDatePicker,
                     stringResource(id = R.string.payyOff),
                     tokenRepository.accessToken,
-                    preferences.isSourceRemote()
-
+                    tokenRepository.isSourceRemote,
                 )
             }
         }

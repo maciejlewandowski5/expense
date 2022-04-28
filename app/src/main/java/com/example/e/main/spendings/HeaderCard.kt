@@ -22,14 +22,15 @@ fun HeaderCard(
     currentSpendingState: CurrentSpendingState,
     navigation: MainScreenNavigationContract,
     contract: MainViewContract,
-    switchSourceContract: SwitchSourceCardContract
+    switchSourceContract: SwitchSourceCardContract,
+    isSourceRemote: Boolean
 ) {
     Column(
         modifier = Modifier
             .background(MaterialTheme.colors.background)
             .padding(horizontal = 16.dp, vertical = 4.dp)
     ) {
-        SwitchSourceCard(switchSourceContract)
+        SwitchSourceCard(isSourceRemote, switchSourceContract)
         when (currentSpendingState) {
             is CurrentSpendingState.Success -> {
                 HeaderCardContent(
@@ -80,7 +81,8 @@ fun DefaultPreview() {
                 override fun switchSource(isSourceRemote: Boolean) {}
                 override fun onSourceSwitchedToTrue() {}
                 override fun onSourceSwitchedToFalse() {}
-            }
+            },
+            isSourceRemote = true
         )
     }
 }
@@ -110,7 +112,8 @@ fun LoadingPreview() {
                 override fun switchSource(isSourceRemote: Boolean) {}
                 override fun onSourceSwitchedToTrue() {}
                 override fun onSourceSwitchedToFalse() {}
-            }
+            },
+            isSourceRemote = true
         )
     }
 }
@@ -140,7 +143,8 @@ fun ErrorPreview() {
                 override fun switchSource(isSourceRemote: Boolean) {}
                 override fun onSourceSwitchedToTrue() {}
                 override fun onSourceSwitchedToFalse() {}
-            }
+            },
+            isSourceRemote = true
         )
     }
 }
