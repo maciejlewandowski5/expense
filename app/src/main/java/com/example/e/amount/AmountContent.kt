@@ -1,8 +1,10 @@
 package com.example.e.amount
 
 import androidx.compose.animation.Crossfade
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
@@ -13,6 +15,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
@@ -106,7 +110,7 @@ fun AmountContent(
 ) {
     InputWrapperCard(errorMessage = errorMessage, loadingBar = loadingBar) {
         Column(
-            verticalArrangement = Arrangement.SpaceBetween,
+            verticalArrangement = Arrangement.spacedBy(12.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             TextField(
@@ -118,17 +122,27 @@ fun AmountContent(
             Spacer(modifier = Modifier.height(8.dp))
             Crossfade(targetState = proposedExpense) {
                 if (it != null) {
+                    val shape = RoundedCornerShape(8.dp)
                     Column(
-                        modifier = Modifier.fillMaxWidth(),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .shadow(elevation = 2.dp, shape)
+                            .clip(shape)
+                            .background(MaterialTheme.colors.surface)
+                            .padding(vertical = 24.dp, horizontal = 16.dp),
                         horizontalAlignment = Alignment.Start
                     ) {
-                        Text(text = stringResource(id = R.string.proposedSplit))
+                        Text(
+                            text = stringResource(id = R.string.proposedSplit),
+                            color = MaterialTheme.colors.onSurface,
+                            style = MaterialTheme.typography.h6
+                        )
                         LazyColumn(content = {
                             items(count = it.participants.size) { index ->
                                 val participant = it.participants[index]
                                 Text(
                                     text = participant.user.name,
-                                    color = MaterialTheme.colors.onBackground
+                                    color = MaterialTheme.colors.onSurface
                                 )
                                 Text(
                                     text = "${participant.amount.toPlainString()} PLN",

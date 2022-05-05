@@ -28,10 +28,11 @@
     <string name="wrongCreditentials">Creditientials are incorrect</string>
     <string name="onlineSource">Use online database</string>
     <string name="removeExpense">Remove expense</string>
-    <string name="proposedSplit">Propose expense split</string>
+    <string name="proposedSplit">Proposed expense split</string>
     <string name="splitManually">Split manually</string>
     <string name="totalBorrowedAmount">"Total borrowed amount: "</string>
     <string name="payersShouldPay">"Payers should pay: "</string>
     <string name="borrowesShouldBorrow">"Borrower should borrow: "</string>
     <string name="PLN">PLN</string>
+    <string name="expenses">Expenses</string>
 </resources>

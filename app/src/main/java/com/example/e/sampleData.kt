@@ -44,23 +44,38 @@ val sampleExpense = Expense(
     date = sampleDateTime
 )
 
+fun sampleExpense(id: Long) = Expense(
+    id,
+    "ko",
+    participants = listOf(
+        Participant(1, sampleUsers[0], BigDecimal("1000000000006.50")),
+        Participant(1, sampleUsers[0], BigDecimal("16.50")),
+        Participant(1, sampleUsers[0], BigDecimal("16.50")),
+        Participant(1, sampleUsers[0], BigDecimal("16.50")),
+        Participant(1, sampleUsers[0], BigDecimal("16.50")),
+        Participant(1, sampleUsers[0], BigDecimal("16.50")),
+        Participant(1, sampleUsers[0], BigDecimal("16.50"))
+    ),
+    date = sampleDateTime
+)
+
 val sampleExpenses = listOf(
-    sampleExpense,
-    sampleExpense,
-    sampleExpense,
-    sampleExpense,
-    sampleExpense,
-    sampleExpense,
-    sampleExpense,
-    sampleExpense,
-    sampleExpense,
-    sampleExpense,
-    sampleExpense,
-    sampleExpense,
-    sampleExpense,
-    sampleExpense,
-    sampleExpense,
-    sampleExpense,
+    sampleExpense(0),
+    sampleExpense(1),
+    sampleExpense(2),
+    sampleExpense(3),
+    sampleExpense(4),
+    sampleExpense(5),
+    sampleExpense(6),
+    sampleExpense(7),
+    sampleExpense(8),
+    sampleExpense(9),
+    sampleExpense(10),
+    sampleExpense(11),
+    sampleExpense(12),
+    sampleExpense(13),
+    sampleExpense(14),
+
 )
 
 val sampleConversation =

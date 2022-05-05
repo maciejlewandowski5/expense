@@ -15,6 +15,7 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -94,7 +95,10 @@ fun MainViewContent(
         },
         content = { a ->
             Box(contentAlignment = Alignment.BottomCenter) {
-                Column(modifier = Modifier.fillMaxSize()) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                ) {
                     HeaderCard(
                         currentSpendingState = currentSpendingState,
                         navigation = navigation,
@@ -103,24 +107,31 @@ fun MainViewContent(
                         isSourceRemote = isSourceRemote,
                         isRefreshing = isRefreshingExpenses
                     )
-                    Spacer(modifier = Modifier.height(4.dp))
-                    Divider()
-                    Spacer(modifier = Modifier.height(4.dp))
-                    ExpensesList.ExpensesCard(
-                        expenses = expenses,
-                        isRefreshing = isRefreshingExpenses,
-                        onRefresh = contract::onRefresh,
-                        deleteExpense = contract::deleteExpense
-                    )
+                    Column(modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp)) {
+                        Spacer(modifier = Modifier.height(16.dp))
+                        Text(
+                            text = stringResource(id = R.string.expenses),
+                            color = MaterialTheme.colors.onBackground
+                        )
+                        Spacer(modifier = Modifier.height(12.dp))
+                        ExpensesList.ExpensesCard(
+                            expenses = expenses,
+                            isRefreshing = isRefreshingExpenses,
+                            onRefresh = contract::onRefresh,
+                            deleteExpense = contract::deleteExpense
+                        )
+                    }
                 }
 
                 if (deleteTimeout > 0) {
+                    val shape = RoundedCornerShape(8.dp)
                     Column(
                         horizontalAlignment = Alignment.CenterHorizontally,
                         modifier = Modifier
                             .offset(y = (-80).dp)
                             .padding(8.dp)
-                            .clip(RoundedCornerShape(10.dp))
+                            .shadow(shape = shape, elevation = 16.dp)
+                            .clip(shape)
                             .background(color = MaterialTheme.colors.surface)
                     ) {
                         Row(

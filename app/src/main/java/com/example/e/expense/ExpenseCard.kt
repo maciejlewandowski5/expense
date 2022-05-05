@@ -6,11 +6,9 @@ import androidx.compose.animation.Crossfade
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.gestures.Orientation
-import androidx.compose.foundation.gestures.ScrollableState
-import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
@@ -18,6 +16,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
@@ -29,7 +28,6 @@ import com.example.e.sampleExpense
 import com.example.e.ui.theme.ETheme
 import com.example.e.ui.theme.debt
 import com.example.e.ui.theme.loan
-import com.example.e.ui.theme.secondarySurface
 import com.google.accompanist.pager.ExperimentalPagerApi
 import java.math.BigDecimal
 import java.time.ZoneId
@@ -43,89 +41,103 @@ object ExpenseCard {
         lighterBackground: Boolean,
         isExpanded: Boolean = false,
         modifier: Modifier = Modifier,
-        delete: (Expense) -> Unit
+        delete: (Expense) -> Unit,
+        content: (@Composable () -> Unit)? = null
     ) {
-        val backgroundColor = if (lighterBackground) {
-            MaterialTheme.colors.background
-        } else {
-            MaterialTheme.colors.secondarySurface
-        }
         var expanded by remember { mutableStateOf(isExpanded) }
 
-        Column(
-            modifier = modifier
-                .background(backgroundColor)
-                .padding(horizontal = 16.dp, vertical = 4.dp)
+        val shape = RoundedCornerShape(8.dp)
+        Row(
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier
+                .fillMaxWidth()
+                .shadow(1.dp, shape = shape)
+                .background(color = MaterialTheme.colors.surface)
+                .clip(shape)
                 .clickable { expanded = !expanded }
-                .scrollable(
-                    ScrollableState { it },
-                    Orientation.Horizontal,
-                    enabled = true,
-                )
         ) {
-            Row(
-                modifier = Modifier
-                    .background(backgroundColor)
-                    .fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
+            Column(
+                modifier = modifier
+                    .background(MaterialTheme.colors.surface)
+                    .padding(horizontal = 16.dp, vertical = 24.dp)
+                    .fillMaxWidth(if (content == null) 1f else 0.7f)
+
             ) {
-                Column(
+                Row(
                     modifier = Modifier
-                        .align(alignment = Alignment.CenterVertically)
-                        .animateContentSize()
-                        .fillMaxWidth(0.6f)
+                        .background(MaterialTheme.colors.surface)
+                        .fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
                 ) {
-                    Title(expense, expanded)
-                }
-                Column(
-                    verticalArrangement = Arrangement.SpaceEvenly,
-                ) {
-                    Crossfade(targetState = expanded, modifier = Modifier.align(Alignment.End)) {
-                        if (it) {
-                            Box(
-                                modifier = Modifier
-                                    .clip(CircleShape)
-                                    .clickable { delete(expense) }
-                                    .padding(4.dp)
-                            ) {
-                                Icon(
-                                    Icons.Filled.Close,
-                                    contentDescription = stringResource(id = R.string.removeExpense),
-                                    tint = MaterialTheme.colors.onBackground,
-                                )
-                            }
-                        }
-                        Spacer(modifier = Modifier.height(8.dp))
+                    Column(
+                        modifier = Modifier
+                            .align(alignment = Alignment.CenterVertically)
+                            .animateContentSize()
+                            .fillMaxWidth(0.6f)
+                    ) {
+                        Title(expense, expanded)
                     }
-                    Text(
-                        text = if (expanded) {
-                            expense.date.format(
-                                DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")
+                    Column(
+                        verticalArrangement = Arrangement.SpaceEvenly,
+                    ) {
+                        Crossfade(
+                            targetState = expanded,
+                            modifier = Modifier.align(Alignment.End)
+                        ) {
+                            if (it) {
+                                Box(
+                                    modifier = Modifier
+                                        .clip(CircleShape)
+                                        .clickable { delete(expense) }
+                                        .padding(4.dp)
+                                ) {
+                                    if (content == null) {
+                                        Icon(
+                                            Icons.Filled.Close,
+                                            contentDescription = stringResource(id = R.string.removeExpense),
+                                            tint = MaterialTheme.colors.onBackground,
+                                        )
+                                    }
+                                }
+                            }
+                            Spacer(modifier = Modifier.height(8.dp))
+                        }
+                        if (content == null) {
+                            Text(
+                                text = if (expanded) {
+                                    expense.date.format(
+                                        DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")
+                                    )
+                                } else {
+                                    DateUtils.getRelativeTimeSpanString(
+                                        expense.date.atZone(ZoneId.systemDefault()).toInstant()
+                                            .toEpochMilli(),
+                                        System.currentTimeMillis(),
+                                        DateUtils.SECOND_IN_MILLIS,
+                                        DateUtils.FORMAT_ABBREV_ALL
+                                    ).toString()
+                                },
+                                color = MaterialTheme.colors.onSurface,
+                                style = MaterialTheme.typography.caption,
+                                modifier = Modifier.align(
+                                    alignment = Alignment.End
+                                )
                             )
-                        } else {
-                            DateUtils.getRelativeTimeSpanString(
-                                expense.date.atZone(ZoneId.systemDefault()).toInstant()
-                                    .toEpochMilli(),
-                                System.currentTimeMillis(),
-                                DateUtils.SECOND_IN_MILLIS,
-                                DateUtils.FORMAT_ABBREV_ALL
-                            ).toString()
-                        },
-                        color = MaterialTheme.colors.onBackground,
-                        style = MaterialTheme.typography.caption,
-                        modifier = Modifier.align(
-                            alignment = Alignment.End
+                        }
+                        Text(
+                            text = expense.totalAmount().toPlainString(),
+                            style = MaterialTheme.typography.h5,
+                            modifier = Modifier.align(alignment = Alignment.End),
+                            overflow = TextOverflow.Ellipsis,
+                            color = MaterialTheme.colors.onSurface,
+                            maxLines = if (!expanded) 1 else Int.MAX_VALUE
                         )
-                    )
-                    Text(
-                        text = expense.totalAmount().toPlainString(),
-                        style = MaterialTheme.typography.h5,
-                        modifier = Modifier.align(alignment = Alignment.End),
-                        overflow = TextOverflow.Ellipsis,
-                        color = MaterialTheme.colors.onBackground,
-                        maxLines = if (!expanded) 1 else Int.MAX_VALUE
-                    )
+                    }
                 }
+            }
+            Box(Modifier.fillMaxWidth(0.3f)) {
+                content?.let { it() }
             }
         }
     }
@@ -150,7 +162,7 @@ private fun Title(expense: Expense, expanded: Boolean) {
                         }
                     },
                 style = MaterialTheme.typography.caption,
-                color = MaterialTheme.colors.onBackground,
+                color = MaterialTheme.colors.onSurface,
                 overflow = TextOverflow.Ellipsis,
                 maxLines = 1
             )

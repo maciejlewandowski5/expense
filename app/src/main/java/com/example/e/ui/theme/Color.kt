@@ -22,3 +22,8 @@ val Red = Color(0xFFFCD0007)
 
 val GreenL = Color(0xFF2DFACA)
 val RedL = Color(0xFFFF8084)
+
+val LightGray = Color(0xFFEEEFF0)
+val FocusBlue = Color(0xFF1F5BA7)
+val FocusBlue900 = Color(0xFF123680)
+val DeepFocusBlue = Color(0xFF001738)

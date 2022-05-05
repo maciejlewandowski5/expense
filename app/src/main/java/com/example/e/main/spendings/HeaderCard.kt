@@ -7,6 +7,8 @@ import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.e.*
@@ -17,6 +19,7 @@ import com.example.e.main.MainViewContract
 import com.example.e.source.SwitchSourceCard
 import com.example.e.source.SwitchSourceCardContract
 import com.example.e.ui.theme.ETheme
+import com.example.e.ui.theme.Shapes
 
 @Composable
 fun HeaderCard(
@@ -30,7 +33,7 @@ fun HeaderCard(
     Column(
         modifier = Modifier
             .background(MaterialTheme.colors.background)
-            .padding(horizontal = 16.dp, vertical = 4.dp)
+            .shadow(4.dp)
     ) {
         SwitchSourceCard(isSourceRemote, switchSourceContract)
         when (currentSpendingState) {

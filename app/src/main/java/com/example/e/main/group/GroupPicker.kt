@@ -85,14 +85,14 @@ fun GroupCard(
     setCurrentGroup: (AccountingGroup) -> Unit
 ) {
     val currentGroupColor = if (isCurrentGroup) {
-        MaterialTheme.colors.background
-    } else {
         MaterialTheme.colors.surface
+    } else {
+        MaterialTheme.colors.background
     }
     val currentTextColor = if (isCurrentGroup) {
-        MaterialTheme.colors.onBackground
-    } else {
         MaterialTheme.colors.onSurface
+    } else {
+        MaterialTheme.colors.onBackground
     }
     val shape = RoundedCornerShape(
         topStart = 6.dp, topEnd = 6.dp, bottomEnd = 0.dp, bottomStart = 0.dp
@@ -108,9 +108,7 @@ fun GroupCard(
         Box(
             contentAlignment = Alignment.BottomCenter,
             modifier = Modifier
-                .clip(
-                    shape = shape
-                )
+                .clip(shape = shape)
                 .border(
                     border = BorderStroke(
                         width = 1.dp,

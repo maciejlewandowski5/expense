@@ -28,7 +28,6 @@ import com.example.e.domain.Expense
 import com.example.e.expense.ExpenseCard
 import com.example.e.sampleExpenses
 import com.example.e.ui.theme.ETheme
-import com.example.e.ui.theme.secondarySurface
 
 @Composable
 fun SettleScreen(viewModel: SettleViewModel) {
@@ -80,6 +79,7 @@ fun SettleContent(
                     item, index % 2 == 0, settlePolicySwitch,
                     addExpense
                 )
+                Spacer(modifier = Modifier.height(4.dp))
             }
         }
     }
@@ -92,36 +92,30 @@ fun ExpenseSettleCard(
     isOneSettlement: Boolean,
     addExpense: (Expense) -> Unit
 ) {
-    Row(
-        horizontalArrangement = Arrangement.Center,
-        verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier
-            .fillMaxWidth()
-            .background(color = if (lighterBackground) MaterialTheme.colors.background else MaterialTheme.colors.secondarySurface)
-    ) {
-        Box(Modifier.fillMaxWidth(0.9f)) {
-            ExpenseCard.ExpenseCard(
-                expense = expense,
-                lighterBackground = lighterBackground,
-                isOneSettlement,
-                delete = {}
-            )
+
+    ExpenseCard.ExpenseCard(
+        expense = expense,
+        lighterBackground = lighterBackground,
+        isOneSettlement,
+        delete = {},
+        content = {
+            Box(
+                contentAlignment = Alignment.Center,
+                modifier = Modifier
+                    .clip(shape = CircleShape)
+                    .background(color = MaterialTheme.colors.surface)
+                    .padding(start = 8.dp)
+                    .border(color = MaterialTheme.colors.primary, width = 1.dp, shape = CircleShape)
+                    .clickable { addExpense(expense) }
+            ) {
+                Icon(
+                    Icons.Filled.Done,
+                    contentDescription = stringResource(id = R.string.pay),
+                    tint = MaterialTheme.colors.onSurface
+                )
+            }
         }
-        Box(
-            contentAlignment = Alignment.Center,
-            modifier = Modifier
-                .clip(shape = CircleShape)
-                .background(color = MaterialTheme.colors.background)
-                .border(color = MaterialTheme.colors.primary, width = 1.dp, shape = CircleShape)
-                .clickable { addExpense(expense) }
-        ) {
-            Icon(
-                Icons.Filled.Done,
-                contentDescription = stringResource(id = R.string.pay),
-                tint = MaterialTheme.colors.onBackground
-            )
-        }
-    }
+    )
 }
 
 @Preview(

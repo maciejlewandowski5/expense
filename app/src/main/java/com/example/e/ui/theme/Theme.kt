@@ -22,16 +22,16 @@ private val DarkColorPalette = darkColors(
 )
 
 private val LightColorPalette = lightColors(
-    primary = DeepBlue,
-    primaryVariant = EasternBlue,
+    primary = FocusBlue,
+    primaryVariant = FocusBlue900,
     secondary = FlushOrange,
     secondaryVariant = SelectiveYellow,
-    surface = Cornflower,
-    background = Color.White,
+    surface = Color.White,
+    background = LightGray,
     onPrimary = Color.White,
-    onSecondary = Color.Black,
-    onBackground = Color.Black,
-    onSurface = Color.Black,
+    onSecondary = DeepFocusBlue,
+    onBackground = DeepFocusBlue,
+    onSurface = DeepFocusBlue,
 )
 
 @get:Composable

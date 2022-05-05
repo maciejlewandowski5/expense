@@ -73,7 +73,7 @@ fun LoginScaffold(
                     )
                 }
             },
-            content = {
+            content = { _ ->
                 LoginContent(
                     userName = userName,
                     userPassword = userPassword,
@@ -104,12 +104,12 @@ fun LoginContent(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(20.dp),
     ) {
-        Box(modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp)) {
+
             SwitchSourceCard(
                 isSourceRemote = isSourceRemote,
                 contract = switchSourceContract
             )
-        }
+
         val (errorMessage: String?, isLoading) = when (loginEffect) {
             is LoginEffect.LoginInProgress -> Pair(null, true)
             is LoginEffect.ShowErrorMessage -> Pair(

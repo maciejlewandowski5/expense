@@ -1,7 +1,9 @@
 package com.example.e.split
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
@@ -10,6 +12,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
@@ -47,53 +51,57 @@ fun SplitContent(
             InputWrapperCard(
                 errorMessage = errorMessage,
                 loadingBar = loadingBar,
+                spacedBy = 2,
                 content = {
-                    Row(
-                        horizontalArrangement = Arrangement.End,
-                        modifier = Modifier.fillMaxWidth()
+                    Column(
+                        verticalArrangement = Arrangement.SpaceBetween,
+                        modifier = Modifier.fillMaxHeight(0.1f)
                     ) {
-                        Text(
-                            color = MaterialTheme.colors.onBackground,
-                            text = stringResource(id = R.string.totalBorrowedAmount),
-                            style = MaterialTheme.typography.h5,
-                        )
-                        Text(
-                            color = MaterialTheme.colors.onBackground,
-                            text = "$totalBorrowedAmount ${R.string.PLN}",
-                            style = MaterialTheme.typography.h5,
-                        )
+                        Row(
+                            horizontalArrangement = Arrangement.End,
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            Text(
+                                color = MaterialTheme.colors.onBackground,
+                                text = stringResource(id = R.string.totalBorrowedAmount),
+                            )
+                            Text(
+                                color = MaterialTheme.colors.onBackground,
+                                text = "$totalBorrowedAmount ${stringResource(R.string.PLN)}",
+                            )
+                        }
+                        Row(
+                            horizontalArrangement = Arrangement.End,
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            Text(
+                                color = MaterialTheme.colors.onBackground,
+                                text = if (leftToSplit.startsWith("-")) stringResource(id = R.string.payersShouldPay) else {
+                                    stringResource(id = R.string.borrowesShouldBorrow)
+                                },
+                            )
+                            Text(
+                                color = MaterialTheme.colors.onBackground,
+                                text = "$leftToSplit ${stringResource(R.string.PLN)}",
+                            )
+                        }
                     }
-                    Row(
-                        horizontalArrangement = Arrangement.End,
-                        modifier = Modifier.fillMaxWidth()
-                    ) {
-                        Text(
-                            color = MaterialTheme.colors.onBackground,
-                            text = if (leftToSplit.startsWith("-")) stringResource(id = R.string.payersShouldPay) else {
-                                stringResource(id = R.string.borrowesShouldBorrow)
-                            },
-                            style = MaterialTheme.typography.h5,
-                        )
-                        Text(
-                            color = MaterialTheme.colors.onBackground,
-                            text = "$leftToSplit ${R.string.PLN}",
-                            style = MaterialTheme.typography.h5,
-                        )
-                    }
-                    Column(modifier = Modifier.height(IntrinsicSize.Max)) {
+                    Column(modifier = Modifier.fillMaxHeight()) {
                         SplitCard(
                             borrowers,
                             stringResource(R.string.borowers),
                             sign = "-",
                             color = MaterialTheme.colors.debt,
-                            amountSet = setBorrowerAmount
+                            amountSet = setBorrowerAmount,
+                            modifier = Modifier.fillMaxHeight(0.5f)
                         )
                         SplitCard(
                             payers,
                             stringResource(R.string.payers),
                             sign = "+",
                             color = MaterialTheme.colors.loan,
-                            amountSet = setPayerAmount
+                            amountSet = setPayerAmount,
+                            modifier = Modifier.fillMaxHeight()
                         )
                     }
                 }
@@ -111,8 +119,7 @@ private fun SplitCard(
     color: Color,
     amountSet: (Participant, String) -> Unit
 ) {
-    Column(verticalArrangement = Arrangement.Top, modifier = modifier) {
-        Spacer(modifier = Modifier.height(10.dp))
+    Column(verticalArrangement = Arrangement.Top, modifier = modifier.fillMaxHeight()) {
         Box(
             contentAlignment = Alignment.BottomStart,
             modifier = Modifier.fillMaxWidth()
@@ -120,24 +127,27 @@ private fun SplitCard(
             Text(
                 color = MaterialTheme.colors.onBackground,
                 text = text,
-                style = MaterialTheme.typography.h5,
+                style = MaterialTheme.typography.caption,
                 textAlign = TextAlign.Start,
                 modifier = Modifier.fillMaxWidth(0.3f)
 
             )
-            Divider(
-                color = color,
-                thickness = 2.dp,
-                modifier = Modifier.fillMaxWidth(0.4f)
-            )
+            Spacer(modifier = Modifier.height(4.dp))
         }
 
-        LazyColumn(modifier = Modifier.height(200.dp)) {
+        LazyColumn(modifier = Modifier.fillMaxHeight().defaultMinSize(minHeight = 200.dp)) {
+            val shape = RoundedCornerShape(8.dp)
             items(users.size) { index ->
+
                 Row(
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .shadow(elevation = 4.dp, shape = shape)
+                        .background(MaterialTheme.colors.surface)
+                        .clip(shape)
+                        .padding(vertical = 16.dp, horizontal = 24.dp)
                 ) {
                     Text(
                         text = users[index].participant.user.name,
@@ -172,6 +182,7 @@ private fun SplitCard(
                         )
                     }
                 }
+                Spacer(modifier = Modifier.height(4.dp))
             }
         }
     }
