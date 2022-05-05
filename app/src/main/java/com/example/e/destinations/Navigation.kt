@@ -11,7 +11,6 @@ import androidx.navigation.*
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.example.e.login.session.AccessToken
-import com.example.e.source.SwitchSourceCard
 import kotlinx.serialization.ExperimentalSerializationApi
 import java.time.LocalDateTime
 
@@ -29,10 +28,10 @@ object Navigation {
     ) {
         fun NavGraphBuilder.composableWithAuthorization(
             destination: Destination,
-            arguments: List<NamedNavArgument> = emptyList(),
+
             deepLinks: List<NavDeepLink> = emptyList(),
         ) {
-            composable(destination.route, arguments, deepLinks) {
+            composable(destination.route, destination.arguments, deepLinks) {
                 val token by accessToken.observeAsState()
                 val isSourceRemote by sourceRemote.observeAsState(false)
                 if (isNavigateToLoginScreenRequired(
@@ -67,7 +66,7 @@ object Navigation {
     fun NavHostController.navigateHome(): () -> Unit =
         { this.navigate(Destination.HOME) }
 
-    private fun NavHostController.navigate(destination: Destination) {
+    fun NavHostController.navigate(destination: Destination) {
         navigate(destination.route)
     }
 }

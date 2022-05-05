@@ -9,7 +9,7 @@
     <string name="date">Date</string>
     <string name="addParticipantButton">Add participant button</string>
     <string name="amount">Amount</string>
-    <string name="borowers">Borowers</string>
+    <string name="borowers">Borrowers</string>
     <string name="payers">Payers</string>
     <string name="genericError">Something went wrong, try again later.</string>
     <string name="amountInputError">Amount should be positive decimal number</string>
@@ -27,4 +27,11 @@
     <string name="password">Password</string>
     <string name="wrongCreditentials">Creditientials are incorrect</string>
     <string name="onlineSource">Use online database</string>
+    <string name="removeExpense">Remove expense</string>
+    <string name="proposedSplit">Propose expense split</string>
+    <string name="splitManually">Split manually</string>
+    <string name="totalBorrowedAmount">"Total borrowed amount: "</string>
+    <string name="payersShouldPay">"Payers should pay: "</string>
+    <string name="borrowesShouldBorrow">"Borrower should borrow: "</string>
+    <string name="PLN">PLN</string>
 </resources>

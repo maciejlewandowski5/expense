@@ -56,6 +56,7 @@ class NetworkModule {
 
     companion object {
         const val GROUP_ID = "groupId"
+        const val EXPENSE_ID = "expenseId"
 
         const val BASE_URL = "https://c8f57ac9-ddae-4ed6-8068-565a91fcdaf7.mock.pstmn.io"
 
@@ -69,5 +70,6 @@ class NetworkModule {
         const val ALL_USERS = "s/users"
         const val ADD_MEMBER = "s/group/{$GROUP_ID}/member"
         const val ADD_EXPENSE = "s/group/{$GROUP_ID}/expense"
+        const val DELETE_EXPENSES = "/s/expenses/{$EXPENSE_ID}"
     }
 }

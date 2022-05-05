@@ -11,6 +11,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.e.*
 import com.example.e.domain.AccountingGroup
+import com.example.e.domain.Expense
 import com.example.e.main.MainScreenNavigationContract
 import com.example.e.main.MainViewContract
 import com.example.e.source.SwitchSourceCard
@@ -78,6 +79,13 @@ fun DefaultPreview() {
                 override fun switchSource(isSourceRemote: Boolean) {}
                 override fun setCurrentGroup(accountingGroup: AccountingGroup) {}
                 override fun onRefresh() {}
+                override fun deleteExpense(expense: Expense): Unit? {
+                    TODO("Not yet implemented")
+                }
+
+                override fun cancelDelete(): Unit? {
+                    TODO("Not yet implemented")
+                }
             },
             object : SwitchSourceCardContract {
                 override fun switchSource(isSourceRemote: Boolean) {}
@@ -110,6 +118,13 @@ fun LoadingPreview() {
                 override fun switchSource(isSourceRemote: Boolean) {}
                 override fun setCurrentGroup(accountingGroup: AccountingGroup) {}
                 override fun onRefresh() {}
+                override fun deleteExpense(expense: Expense): Unit? {
+                    TODO("Not yet implemented")
+                }
+
+                override fun cancelDelete(): Unit? {
+                    TODO("Not yet implemented")
+                }
             },
             object : SwitchSourceCardContract {
                 override fun switchSource(isSourceRemote: Boolean) {}
@@ -141,6 +156,13 @@ fun ErrorPreview() {
                 override fun switchSource(isSourceRemote: Boolean) {}
                 override fun setCurrentGroup(accountingGroup: AccountingGroup) {}
                 override fun onRefresh() {}
+                override fun deleteExpense(expense: Expense): Unit? {
+                    TODO("Not yet implemented")
+                }
+
+                override fun cancelDelete(): Unit? {
+                    TODO("Not yet implemented")
+                }
             },
             object : SwitchSourceCardContract {
                 override fun switchSource(isSourceRemote: Boolean) {}

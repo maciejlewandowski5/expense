@@ -87,6 +87,10 @@ class LocalDataProvider @Inject constructor(
             GroupId(groupDao.addGroupWithMembers(accountingGroup, members))
         }
 
+    override suspend fun deleteExpense(expense: Expense, groupId: GroupId) {
+        expenseDao.delete(expense.toExpenseModel(groupId))
+    }
+
     companion object {
         private const val DEFAULT_GROUP_NAME = "Example group"
     }

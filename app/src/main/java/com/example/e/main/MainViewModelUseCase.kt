@@ -5,9 +5,9 @@ import arrow.core.andThen
 import arrow.core.valid
 import com.example.e.data.repository.RepositoryImpl
 import com.example.e.domain.AccountingGroup
+import com.example.e.domain.Expense
 import com.example.e.expense.ExpensesState
 import com.example.e.logThrowable
-import com.example.e.login.session.SessionStore
 import com.example.e.main.spendings.CurrentSpendingState
 import com.example.e.sharedpreferences.Preferences
 import kotlinx.coroutines.async
@@ -19,7 +19,6 @@ import javax.inject.Inject
 class MainViewModelUseCase @Inject constructor(
     private val repositoryImpl: RepositoryImpl,
     private val preferences: Preferences,
-    private val sessionStore: SessionStore
 ) {
 
     suspend fun fetchGroupDetails(
@@ -35,7 +34,8 @@ class MainViewModelUseCase @Inject constructor(
         val groups = async { repositoryImpl.allGroups() }
 
         detailsAsync.await().andThen { group ->
-            expensesState.value = ExpensesState.Success(group.expenses)
+            expensesState.value =
+                ExpensesState.Success(group.expenses.sortedByDescending { it.date })
             groups.await().andThen {
                 group.toHeaderCardData(it.groups).valid()
             }
@@ -50,6 +50,10 @@ class MainViewModelUseCase @Inject constructor(
 
     suspend fun setCurrentGroup(accountingGroup: AccountingGroup) =
         preferences.setGroupId(accountingGroup.id)
+
+    suspend fun deleteExpense(expense: Expense) {
+        repositoryImpl.deleteExpense(expense, preferences.groupId())
+    }
 
     companion object {
         const val DEFAULT_GROUP = "DEFAULT_GROUP"

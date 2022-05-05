@@ -4,10 +4,10 @@ import android.accounts.AuthenticatorException
 import arrow.core.Validated
 import arrow.core.invalid
 import com.example.e.addObject
-import com.example.e.fetchList
 import com.example.e.data.remotemodels.*
 import com.example.e.data.repository.Repository
 import com.example.e.domain.*
+import com.example.e.fetchList
 import com.example.e.fetchObject
 import com.example.e.login.session.TokenRepository
 import kotlinx.serialization.ExperimentalSerializationApi
@@ -85,5 +85,13 @@ class RemoteDataProvider @Inject constructor(
                 )
             )
         }.map { GroupId(it) }
+    }
+
+    override suspend fun deleteExpense(expense: Expense, groupId: GroupId) {
+        callIfAuthExist {
+            addObject {
+                groupService.deleteExpense(expense.id)
+            }
+        }
     }
 }

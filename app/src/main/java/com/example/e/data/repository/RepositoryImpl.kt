@@ -10,9 +10,15 @@ import javax.inject.Inject
 @ExperimentalSerializationApi
 class RepositoryImpl @Inject constructor(
     private val localDataProvider: LocalDataProvider,
-    private val repositoryRemoteProvider: RemoteDataProvider,
+    private val remoteDataProvider: RemoteDataProvider,
     private val preferences: Preferences
 ) : Repository {
+
+    private val repositoryResolver: Map<Boolean, Repository> = mapOf(
+        true to remoteDataProvider,
+        false to localDataProvider
+    )
+
     override suspend fun allGroups() = resolveRepository().allGroups()
 
     override suspend fun groupDetails(groupId: GroupId) = resolveRepository().groupDetails(groupId)
@@ -32,9 +38,10 @@ class RepositoryImpl @Inject constructor(
     override suspend fun addGroup(accountingGroup: AccountingGroup, members: List<User>) =
         resolveRepository().addGroup(accountingGroup, members)
 
-    private fun resolveRepository() = if (preferences.isSourceRemote()) {
-        repositoryRemoteProvider
-    } else {
-        localDataProvider
+    override suspend fun deleteExpense(expense: Expense, groupId: GroupId) {
+        resolveRepository().deleteExpense(expense, groupId)
     }
+
+    private fun resolveRepository() =
+        repositoryResolver.getOrDefault(preferences.isSourceRemote(), localDataProvider)
 }

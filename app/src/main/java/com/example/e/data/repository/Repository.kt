@@ -23,4 +23,6 @@ interface Repository {
         accountingGroup: AccountingGroup,
         members: List<User>
     ): Validated<Throwable, GroupId>
+
+    suspend fun deleteExpense(expense: Expense, groupId: GroupId)
 }

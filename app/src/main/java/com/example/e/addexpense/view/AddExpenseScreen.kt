@@ -8,6 +8,8 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.res.stringResource
 import com.example.e.R
 import com.example.e.addexpense.*
+import com.example.e.addexpense.model.AddExpenseEffect
+import com.example.e.addexpense.model.NewExpenseInput
 import com.example.e.addexpense.participantpicker.ParticpantCardState
 import java.time.LocalDateTime
 
@@ -15,13 +17,12 @@ import java.time.LocalDateTime
 fun AddExpenseScreen(
     addExpenseViewModel: AddExpenseViewModel,
     showDatePicker: () -> Unit,
-    navigateToHome: () -> Unit
+    navigateToHome: (NewExpenseInput) -> Unit
 ) {
     val borrowersState by addExpenseViewModel.borrowersState.observeAsState(emptyList())
     val payersState by addExpenseViewModel.payersState.observeAsState(emptyList())
     val date by addExpenseViewModel.expenseDateTime.observeAsState(initial = LocalDateTime.now())
     val title by addExpenseViewModel.title.observeAsState(initial = "")
-    val amount by addExpenseViewModel.amount.observeAsState(initial = "")
     val addExpenseEffect by addExpenseViewModel.addExpenseEffect.observeAsState(initial = null)
     val (showLoadingBar, errorMessage: String?) = resolveAddExpenseEffect(
         addExpenseEffect, navigateToHome
@@ -33,7 +34,6 @@ fun AddExpenseScreen(
         showDatePicker = showDatePicker,
         date = date,
         borrowersState = borrowersState,
-        amount = amount,
         payersState = payersState,
         errorMessage = errorMessage,
         loadingBar = showLoadingBar
@@ -43,7 +43,7 @@ fun AddExpenseScreen(
 @Composable
 private fun resolveAddExpenseEffect(
     addExpenseEffect: AddExpenseEffect?,
-    navigateToHome: () -> Unit
+    navigateToHome: (NewExpenseInput) -> Unit
 ) = when (addExpenseEffect) {
     is AddExpenseEffect.ShowProgressBar ->
         Pair(true, null)
@@ -51,8 +51,11 @@ private fun resolveAddExpenseEffect(
         Pair(false, stringResource(id = R.string.genericError))
     is AddExpenseEffect.ShowInputErrorMessage ->
         Pair(false, stringResource(id = addExpenseEffect.value.errorMessage()))
-    is AddExpenseEffect.GoToMainScreen ->
-        Pair(false, null).also { LaunchedEffect(key1 = Unit) { navigateToHome() } }
+    is AddExpenseEffect.GoToSplitScreen ->
+        Pair(
+            false,
+            null
+        ).also { LaunchedEffect(key1 = Unit) { navigateToHome(addExpenseEffect.newExpenseInput) } }
     else ->
         Pair(false, null)
 }
@@ -64,7 +67,6 @@ private fun AddExpenseScaffold(
     showDatePicker: () -> Unit,
     date: LocalDateTime,
     borrowersState: List<ParticpantCardState>,
-    amount: String,
     payersState: List<ParticpantCardState>,
     errorMessage: String? = null,
     loadingBar: Boolean
@@ -78,11 +80,10 @@ private fun AddExpenseScaffold(
                 )
             }
         },
-        content = {
+        content = { _ ->
             AddExpenseContent(
                 title = title,
                 date = date,
-                amount = amount,
                 payersState = payersState,
                 borrowersState = borrowersState,
                 contract = addExpenseViewModel,

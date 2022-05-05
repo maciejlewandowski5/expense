@@ -24,6 +24,18 @@ abstract class ExpenseDao {
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     abstract suspend fun insertParticipant(participantModel: ParticipantModel)
+
+    @Delete
+    abstract suspend fun deleteExpense(expense: ExpenseModel)
+
+    @Query("DELETE FROM participants_table WHERE expenseId == :expenseId")
+    abstract suspend fun deleteParticipants(expenseId: Long)
+
+    @Transaction
+    open suspend fun delete(expense: ExpenseModel) {
+        deleteExpense(expense)
+        deleteParticipants(expense.id)
+    }
 }
 
 @Dao

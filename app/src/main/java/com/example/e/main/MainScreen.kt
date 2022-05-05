@@ -1,25 +1,26 @@
 package com.example.e.main
 
 import android.content.res.Configuration
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
-import androidx.compose.material.Divider
-import androidx.compose.material.FloatingActionButton
-import androidx.compose.material.Icon
-import androidx.compose.material.Scaffold
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.e.R
 import com.example.e.domain.AccountingGroup
+import com.example.e.domain.Expense
 import com.example.e.expense.ExpensesList
 import com.example.e.expense.ExpensesState
 import com.example.e.main.spendings.CurrentSpendingState
@@ -42,6 +43,7 @@ fun MainViewScreen(
     val expensesState by mainViewModel.expensesState.observeAsState(ExpensesState.Loading)
     val isSourceRemote by mainViewModel.isSourceRemote.observeAsState(false)
     val isRefreshingExpenses by mainViewModel.isRefreshingExpenses.observeAsState(false)
+    val deleteTimeout by mainViewModel.deleteTimeout.observeAsState(0)
     MainViewContent(
         currentSpendingState = currentSpendingState,
         expenses = expensesState,
@@ -60,6 +62,7 @@ fun MainViewScreen(
         },
         isSourceRemote = isSourceRemote,
         isRefreshingExpenses = isRefreshingExpenses,
+        deleteTimeout = deleteTimeout
     )
 }
 
@@ -71,7 +74,8 @@ fun MainViewContent(
     contract: MainViewContract,
     switchSourceContract: SwitchSourceCardContract,
     isSourceRemote: Boolean,
-    isRefreshingExpenses: Boolean
+    isRefreshingExpenses: Boolean,
+    deleteTimeout: Int,
 ) {
     Scaffold(
         floatingActionButton = {
@@ -89,23 +93,59 @@ fun MainViewContent(
             }
         },
         content = { a ->
-            Column(modifier = Modifier.fillMaxSize()) {
-                HeaderCard(
-                    currentSpendingState = currentSpendingState,
-                    navigation = navigation,
-                    contract = contract,
-                    switchSourceContract = switchSourceContract,
-                    isSourceRemote = isSourceRemote,
-                    isRefreshing = isRefreshingExpenses
-                )
-                Spacer(modifier = Modifier.height(4.dp))
-                Divider()
-                Spacer(modifier = Modifier.height(4.dp))
-                ExpensesList.ExpensesCard(
-                    expenses = expenses,
-                    isRefreshing = isRefreshingExpenses,
-                    onRefresh = contract::onRefresh
-                )
+            Box(contentAlignment = Alignment.BottomCenter) {
+                Column(modifier = Modifier.fillMaxSize()) {
+                    HeaderCard(
+                        currentSpendingState = currentSpendingState,
+                        navigation = navigation,
+                        contract = contract,
+                        switchSourceContract = switchSourceContract,
+                        isSourceRemote = isSourceRemote,
+                        isRefreshing = isRefreshingExpenses
+                    )
+                    Spacer(modifier = Modifier.height(4.dp))
+                    Divider()
+                    Spacer(modifier = Modifier.height(4.dp))
+                    ExpensesList.ExpensesCard(
+                        expenses = expenses,
+                        isRefreshing = isRefreshingExpenses,
+                        onRefresh = contract::onRefresh,
+                        deleteExpense = contract::deleteExpense
+                    )
+                }
+
+                if (deleteTimeout > 0) {
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        modifier = Modifier
+                            .offset(y = (-80).dp)
+                            .padding(8.dp)
+                            .clip(RoundedCornerShape(10.dp))
+                            .background(color = MaterialTheme.colors.surface)
+                    ) {
+                        Row(
+                            horizontalArrangement = Arrangement.SpaceEvenly,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Text(
+                                text = "Do you want undo last action?",
+                                modifier = Modifier.padding(8.dp)
+                            )
+                            Box(
+                                modifier = Modifier
+                                    .clip(CircleShape)
+                                    .clickable { contract.cancelDelete() }
+                                    .padding(4.dp)
+                            ) {
+                                Text(text = "UNDO", style = MaterialTheme.typography.button)
+                            }
+                        }
+                        LinearProgressIndicator(
+                            progress = deleteTimeout / 500f,
+                            Modifier.fillMaxWidth()
+                        )
+                    }
+                }
             }
         }
     )
@@ -138,6 +178,8 @@ fun DefaultPreview() {
                 override fun switchSource(isSourceRemote: Boolean) {}
                 override fun setCurrentGroup(accountingGroup: AccountingGroup) {}
                 override fun onRefresh() {}
+                override fun deleteExpense(expense: Expense) {}
+                override fun cancelDelete() {}
             },
             object : SwitchSourceCardContract {
                 override fun switchSource(isSourceRemote: Boolean) {}
@@ -145,7 +187,8 @@ fun DefaultPreview() {
                 override fun onSourceSwitchedToFalse() {}
             },
             true,
-            true
+            true,
+            300
         )
     }
 }

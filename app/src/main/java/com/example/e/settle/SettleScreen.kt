@@ -103,7 +103,8 @@ fun ExpenseSettleCard(
             ExpenseCard.ExpenseCard(
                 expense = expense,
                 lighterBackground = lighterBackground,
-                isOneSettlement
+                isOneSettlement,
+                delete = {}
             )
         }
         Box(

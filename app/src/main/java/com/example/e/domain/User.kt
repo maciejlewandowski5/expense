@@ -7,6 +7,7 @@ import com.example.e.data.ParticipantModel
 import com.example.e.data.UserModel
 import com.example.e.domain.Expense.Companion.of
 import com.example.e.domain.Participant.Companion.balance
+import kotlinx.serialization.Serializable
 import java.math.BigDecimal
 
 data class Participant(
@@ -29,6 +30,7 @@ data class Participant(
     }
 }
 
+@Serializable
 data class User(
     val id: String,
     val name: String

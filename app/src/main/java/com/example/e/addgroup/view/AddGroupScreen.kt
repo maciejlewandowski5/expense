@@ -65,7 +65,7 @@ fun AddGroupScaffold(
                     )
                 }
             },
-            content = {
+            content = { _ ->
                 AddGroupContent(
                     groupName = groupName,
                     userNameInput = userNameInput,

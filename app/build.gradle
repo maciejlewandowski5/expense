@@ -92,6 +92,7 @@ dependencies {
 
     implementation 'com.google.accompanist:accompanist-swiperefresh:0.24.7-alpha'
     implementation "com.google.accompanist:accompanist-placeholder-material:0.24.7-alpha"
+    implementation "com.google.accompanist:accompanist-pager:0.24.7-alpha"
 
     implementation 'androidx.activity:activity-compose:1.4.0'
     implementation 'androidx.compose.runtime:runtime-livedata:1.2.0-alpha07'

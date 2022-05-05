@@ -2,17 +2,19 @@ package com.example.e
 
 import com.example.e.addexpense.participantpicker.ParticpantCardState
 import com.example.e.domain.*
+import com.example.e.domain.User.Companion.toParticipants
 import com.example.e.main.group.GroupCardData
 import com.example.e.main.spendings.HeaderCardData
 import java.math.BigDecimal
 import java.time.LocalDateTime
 
 val sampleUsers = listOf(
-    User("alan", "alan kowalski"),
+    User("alan", "alan kowalskidsdofksdokfidksfikdifkdiskfidfkfidkfidfkdiskf"),
     User("testlwy", "alan testowy"),
     User("2", "asdsadlski"),
     User("3", "alan kod sd asd walski"),
 )
+
 val sampleGroups = listOf(
     AccountingGroup(GroupId(1), "group1"),
     AccountingGroup(GroupId(2), "gro up1"),
@@ -61,7 +63,8 @@ val sampleExpenses = listOf(
     sampleExpense,
 )
 
-val sampleConversation = HeaderCardData(BigDecimal("16.50"), "PLN", GroupCardData(sampleGroups, GroupId(2)))
+val sampleConversation =
+    HeaderCardData(BigDecimal("16.50"), "PLN", GroupCardData(sampleGroups, GroupId(2)))
 
 val sampleGroupDetails = GroupDetails(
     accountingGroup = AccountingGroup(GroupId(1), "Asda"), sampleExpenses,
@@ -96,4 +99,6 @@ val sampleParticipantCardState = listOf(
         User("1", "Konrad Testerski"),
         false
     ),
+
 )
+val sampleParticipant = sampleUsers.toParticipants(sampleExpenses)

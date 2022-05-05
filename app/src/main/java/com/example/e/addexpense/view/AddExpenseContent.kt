@@ -4,14 +4,12 @@ import android.content.res.Configuration
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.e.InputWrapperCard
@@ -28,7 +26,6 @@ import java.time.format.DateTimeFormatter
 fun AddExpenseContent(
     title: String,
     date: LocalDateTime,
-    amount: String,
     payersState: List<ParticpantCardState>,
     borrowersState: List<ParticpantCardState>,
     contract: AddExpenseContentContract,
@@ -43,7 +40,6 @@ fun AddExpenseContent(
             AddExpenseInputs(
                 title = title,
                 date = date,
-                amount = amount,
                 payersState = payersState,
                 borrowersState = borrowersState,
                 contract = contract,
@@ -57,7 +53,6 @@ fun AddExpenseContent(
 fun AddExpenseInputs(
     title: String,
     date: LocalDateTime,
-    amount: String,
     payersState: List<ParticpantCardState>,
     borrowersState: List<ParticpantCardState>,
     contract: AddExpenseContentContract,
@@ -86,12 +81,6 @@ fun AddExpenseInputs(
         MaterialTheme.colors.primary,
         MaterialTheme.colors.onPrimary
     )
-    TextField(
-        label = { Text(text = stringResource(id = R.string.amount)) },
-        value = amount,
-        onValueChange = { contract.setAmount(it) },
-        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
-    )
     PickerContent(
         participants = borrowersState,
         participantClick = { contract.borrowerClick(it) },
@@ -116,12 +105,11 @@ fun AddExpenseInputs(
 fun DefaultPreview() {
     ETheme {
         AddExpenseContent(
-            ",", sampleDateTime, "10.00", sampleParticipantCardState,
+            ",", sampleDateTime, sampleParticipantCardState,
             sampleParticipantCardState,
             object : AddExpenseContentContract {
                 override fun setTitle(newTitle: String) {}
                 override fun borrowerClick(pickedParticipant: ParticpantCardState) {}
-                override fun setAmount(newAmount: String) {}
                 override fun payerClick(pickedPayer: ParticpantCardState) {}
             },
             "error", false, {}
