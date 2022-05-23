@@ -12,6 +12,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.filled.Send
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -145,11 +147,21 @@ object ExpenseCard {
 
 @Composable
 private fun Title(expense: Expense, expanded: Boolean) {
-    Text(
-        text = expense.title,
-        style = MaterialTheme.typography.h6,
-        color = MaterialTheme.colors.onBackground
-    )
+    Row(verticalAlignment = Alignment.CenterVertically) {
+        if (!expense.isExternal) {
+            Icon(
+                Icons.Default.Send,
+                contentDescription = stringResource(id = R.string.internalLoan),
+                tint = MaterialTheme.colors.onSurface
+            )
+        }
+        Spacer(modifier = Modifier.width(4.dp))
+        Text(
+            text = expense.title,
+            style = MaterialTheme.typography.h6,
+            color = MaterialTheme.colors.onBackground
+        )
+    }
     Crossfade(targetState = expanded) { expanded ->
         if (!expanded) {
             Text(

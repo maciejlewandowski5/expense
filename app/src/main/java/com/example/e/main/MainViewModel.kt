@@ -51,11 +51,66 @@ class MainViewModel @Inject constructor(
         _isRefreshingExpenses.value = false
     }
 
+    override fun getCurrentGroupIndex(): Int {
+        return if (_currentSpending.value is CurrentSpendingState.Success) {
+            val index =
+                (_currentSpending.value as CurrentSpendingState.Success).let { currentSpending ->
+                    currentSpending.headerCardData.groupCardData.groups.indexOfFirst {
+                        currentSpending.headerCardData.groupCardData.currentGroupId == it.id
+                    }
+                }
+            if (index == -1) 0 else index
+        } else 0
+    }
+
+    override fun getPreviousGroupName(): String {
+        return if (_currentSpending.value is CurrentSpendingState.Success) {
+            (_currentSpending.value as CurrentSpendingState.Success).let { currentSpending ->
+                val index =
+                    currentSpending.headerCardData.groupCardData.groups.indexOfFirst { currentSpending.headerCardData.groupCardData.currentGroupId == it.id } - 1
+                try {
+                    currentSpending.headerCardData.groupCardData.groups[index].title
+                } catch (e: Throwable) {
+                    ""
+                }
+            }
+        } else ""
+    }
+
+    override fun getNextGroupName(): String {
+        return if (_currentSpending.value is CurrentSpendingState.Success) {
+            (_currentSpending.value as CurrentSpendingState.Success).let { currentSpending ->
+                val index =
+                    currentSpending.headerCardData.groupCardData.groups.indexOfFirst { currentSpending.headerCardData.groupCardData.currentGroupId == it.id } + 1
+                try {
+                    currentSpending.headerCardData.groupCardData.groups[index].title
+                } catch (e: Throwable) {
+                    ""
+                }
+            }
+        } else ""
+    }
+
     override fun setCurrentGroup(accountingGroup: AccountingGroup) {
         viewModelScope.launch {
             useCase.setCurrentGroup(accountingGroup)
             _expensesState.value = ExpensesState.Loading
             fetchExpenses()
+        }
+    }
+
+    override fun setCurrentGroup(index: Int) {
+        if (_currentSpending.value is CurrentSpendingState.Success) {
+            (_currentSpending.value as CurrentSpendingState.Success).let {
+                if (index < it.headerCardData.groupCardData.groups.size && index >= 0) {
+                    val group = it.headerCardData.groupCardData.groups[index]
+                    viewModelScope.launch {
+                        useCase.setCurrentGroup(group)
+                        _expensesState.value = ExpensesState.Loading
+                        fetchExpenses()
+                    }
+                }
+            }
         }
     }
 
@@ -66,25 +121,19 @@ class MainViewModel @Inject constructor(
 
     override fun deleteExpense(expense: Expense) {
         if (expensesState.value is ExpensesState.Success) {
-            val list = (expensesState.value as ExpensesState.Success).expenses.toMutableList()
-            _expensesState.value = ExpensesState.Loading
-            list.remove(expense)
-            _expensesState.value =
-                ExpensesState.Success(list)
+            viewModelScope.launch {
+                useCase.deleteExpense(expense)
+            }
+            fetchExpenses()
             _deleteAction.value = viewModelScope.launch {
                 updateDeleteBarAndWait()
-                useCase.deleteExpense(expense)
             }
             _deleteAction.value?.invokeOnCompletion {
                 if (it is CancellationException) {
-                    _expensesState.value =
-                        ExpensesState.Success(
-                            (_expensesState.value as ExpensesState.Success).expenses.toMutableList()
-                                .also {
-                                    it.add(expense)
-                                    it.sortByDescending { it.date }
-                                }.toList()
-                        )
+                    viewModelScope.launch {
+                        useCase.addExpense(expense)
+                        fetchExpenses()
+                    }
                 }
             }
         }

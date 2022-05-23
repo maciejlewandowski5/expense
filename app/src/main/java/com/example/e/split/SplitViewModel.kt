@@ -4,7 +4,6 @@ import androidx.lifecycle.*
 import com.example.e.addexpense.AddExpenseUseCase
 import com.example.e.addexpense.model.AddExpenseEffect
 import com.example.e.addexpense.model.NewExpenseInput
-import com.example.e.addexpense.participantpicker.ParticpantCardState
 import com.example.e.addexpense.participantpicker.ParticpantCardState.Companion.toCustomSplitParticipants
 import com.example.e.changeSign
 import com.example.e.domain.Participant
@@ -14,11 +13,11 @@ import java.math.BigDecimal
 import javax.inject.Inject
 
 @HiltViewModel
-class SplitViewModel @Inject constructor(val createExpenseUseCase: AddExpenseUseCase) :
+class SplitViewModel @Inject constructor(private val createExpenseUseCase: AddExpenseUseCase) :
     ViewModel() {
-    private val _amountToSplit: MutableLiveData<String> =
+    private val _amountToSplit: MutableLiveData<String?> =
         MutableLiveData(BigDecimal.ZERO.toPlainString())
-    val amountToSplit: LiveData<String> = _amountToSplit
+    val amountToSplit: LiveData<String?> = _amountToSplit
 
     private val _totalExpenseAmount: MutableLiveData<String> =
         MutableLiveData(BigDecimal.ZERO.toPlainString())
@@ -43,20 +42,31 @@ class SplitViewModel @Inject constructor(val createExpenseUseCase: AddExpenseUse
     var newExpense: NewExpenseInput? = null
         set(value) {
             if (value != null) {
-                _borrowersState.value = value.borrowers.toCustomSplitParticipants()
-                _payersState.value = value.payers.toCustomSplitParticipants()
-                _amountToSplit.value = value.amount.toPlainString()
+                _borrowersState.value =
+                    value.borrowers.toCustomSplitParticipants(value.amount.abs())
+                _payersState.value = value.payers.toCustomSplitParticipants(value.amount.abs())
+                val amountPayed =
+                    _payersState.value?.sumOf { it.participant.amount } ?: BigDecimal.ZERO
+                val amountBorrowed =
+                    _borrowersState.value?.sumOf { it.participant.amount } ?: BigDecimal.ZERO
+                val expectedAmount = value.amount
+
+                _amountToSplit.value = when {
+                    _borrowersState.value?.size == 1 -> {
+                        expectedAmount.minus(amountPayed).abs().changeSign().toPlainString()
+                    }
+                    _payersState.value?.size == 1 -> {
+                        expectedAmount.plus(amountBorrowed).abs().toPlainString()
+                    }
+                    else -> {
+                        value.amount.toPlainString()
+                    }
+                }
+
+                _totalExpenseAmount.value = value.amount.toPlainString()
             }
             field = value
         }
-
-    fun onBorrowersRetrieved(borrowers: List<ParticpantCardState>) {
-        _borrowersState.value = borrowers.toCustomSplitParticipants()
-    }
-
-    fun onPayersRetrieved(payers: List<ParticpantCardState>) {
-        _payersState.value = payers.toCustomSplitParticipants()
-    }
 
     fun setPayerAmount(participant: Participant, amount: String) {
         _payersState.value?.let { payers ->
@@ -64,9 +74,12 @@ class SplitViewModel @Inject constructor(val createExpenseUseCase: AddExpenseUse
                 parseNumber(amount)?.let { participant.copy(amount = it) } ?: participant,
                 amountInput = amount
             )
-            _payersState.value =
-                payers.toMutableList()
-                    .also { it[it.indexOfFirst { it.participant == participant }] = newPayer }
+            try {
+                _payersState.value =
+                    payers.toMutableList()
+                        .also { it[it.indexOfFirst { it.participant == participant }] = newPayer }
+            } catch (_: Throwable) {
+            }
             calculateAmountLeft()
         }
     }
@@ -75,7 +88,10 @@ class SplitViewModel @Inject constructor(val createExpenseUseCase: AddExpenseUse
         BigDecimal(amount).also { _errorMessage.value = null }
     } catch (e: Throwable) {
         _errorMessage.value = "Value should be number"
-        null
+        if (amount.isEmpty())
+            BigDecimal.ZERO
+        else
+            null
     }
 
     fun setBorrowerAmount(participant: Participant, amount: String) {
@@ -87,17 +103,22 @@ class SplitViewModel @Inject constructor(val createExpenseUseCase: AddExpenseUse
                     amountInput = amount
                 )
 
-            _borrowersState.value =
-                borrowers.toMutableList()
-                    .also { it[it.indexOfFirst { it.participant == participant }] = newBorrower }
+            try {
+                _borrowersState.value =
+                    borrowers.toMutableList()
+                        .also {
+                            it[it.indexOfFirst { it.participant == participant }] = newBorrower
+                        }
+            } catch (_: Throwable) {
+            }
             calculateAmountLeft()
         }
     }
 
     fun createExpense() {
-        if (_borrowersState.value?.sumOf { it.participant.amount }?.let {
-            _payersState.value?.sumOf { it.participant.amount }?.plus(it)
-        }?.compareTo(BigDecimal.ZERO) == 0 &&
+        if (_borrowersState.value?.sumOf { it.participant.amount }?.compareTo(
+                _payersState.value?.sumOf { it.participant.amount }
+            ) == 0 &&
             _borrowersState.value?.any { it.amountInput.isNotEmpty() } == true &&
             _payersState.value?.any { it.amountInput.isNotEmpty() } == true
         ) {
@@ -123,10 +144,23 @@ class SplitViewModel @Inject constructor(val createExpenseUseCase: AddExpenseUse
         val amountPayed = _payersState.value?.sumOf { it.participant.amount } ?: BigDecimal.ZERO
         val amountBorrowed =
             _borrowersState.value?.sumOf { it.participant.amount } ?: BigDecimal.ZERO
-        if (amountBorrowed.plus(amountPayed) == BigDecimal.ZERO) {
-            _errorMessage.value = null
+        val expectedAmount = newExpense?.amount ?: BigDecimal.ZERO
+
+        when {
+            amountBorrowed.abs() < expectedAmount -> {
+                _amountToSplit.value = expectedAmount.plus(amountBorrowed).abs().toPlainString()
+            }
+            amountBorrowed.abs() > expectedAmount -> {
+                _errorMessage.value = "Total expense can not exceed $expectedAmount"
+            }
+            amountBorrowed.abs() == expectedAmount -> {
+                val amount = expectedAmount.minus(amountPayed).abs().changeSign()
+                if (amount.compareTo(BigDecimal.ZERO) != 0) {
+                    _amountToSplit.value = amount.toPlainString()
+                } else {
+                    _amountToSplit.value = null
+                }
+            }
         }
-        _totalExpenseAmount.value = amountPayed.toPlainString()
-        _amountToSplit.value = amountPayed.plus(amountBorrowed).toPlainString()
     }
 }

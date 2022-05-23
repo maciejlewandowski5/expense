@@ -5,8 +5,7 @@ import com.example.e.domain.GroupId
 
 data class GroupCardData(
     val groups: List<AccountingGroup>,
-    val currentGroupId: GroupId
+    val currentGroupId: GroupId,
 ) {
-
     fun currentGroupIndex() = groups.indexOfFirst { it.id == currentGroupId }
 }

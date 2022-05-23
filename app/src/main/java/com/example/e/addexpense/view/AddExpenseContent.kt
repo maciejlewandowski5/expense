@@ -3,11 +3,14 @@ package com.example.e.addexpense.view
 import android.content.res.Configuration
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.Checkbox
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -21,6 +24,7 @@ import com.example.e.sampleParticipantCardState
 import com.example.e.ui.theme.ETheme
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
+import java.util.*
 
 @Composable
 fun AddExpenseContent(
@@ -28,6 +32,7 @@ fun AddExpenseContent(
     date: LocalDateTime,
     payersState: List<ParticpantCardState>,
     borrowersState: List<ParticpantCardState>,
+    isExternal: Boolean,
     contract: AddExpenseContentContract,
     errorMessage: String?,
     loadingBar: Boolean = false,
@@ -43,7 +48,8 @@ fun AddExpenseContent(
                 payersState = payersState,
                 borrowersState = borrowersState,
                 contract = contract,
-                showDatePicker = showDatePicker
+                showDatePicker = showDatePicker,
+                isExternal = isExternal
             )
         }
     )
@@ -53,6 +59,7 @@ fun AddExpenseContent(
 fun AddExpenseInputs(
     title: String,
     date: LocalDateTime,
+    isExternal: Boolean,
     payersState: List<ParticpantCardState>,
     borrowersState: List<ParticpantCardState>,
     contract: AddExpenseContentContract,
@@ -68,7 +75,7 @@ fun AddExpenseInputs(
     ) {
         TextField(
             label = { Text(text = stringResource(id = R.string.date)) },
-            value = date.format(DateTimeFormatter.ISO_DATE_TIME),
+            value = date.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")),
             onValueChange = {},
             enabled = false,
         )
@@ -89,6 +96,10 @@ fun AddExpenseInputs(
         MaterialTheme.colors.secondary,
         MaterialTheme.colors.onSecondary
     )
+    Row(verticalAlignment = Alignment.CenterVertically) {
+        Checkbox(checked = isExternal, onCheckedChange = { contract.externalChanged(it) })
+        Text(text = stringResource(id = R.string.isExternal))
+    }
 }
 
 @Preview(
@@ -107,12 +118,16 @@ fun DefaultPreview() {
         AddExpenseContent(
             ",", sampleDateTime, sampleParticipantCardState,
             sampleParticipantCardState,
-            object : AddExpenseContentContract {
+            contract = object : AddExpenseContentContract {
                 override fun setTitle(newTitle: String) {}
                 override fun borrowerClick(pickedParticipant: ParticpantCardState) {}
                 override fun payerClick(pickedPayer: ParticpantCardState) {}
+                override fun externalChanged(isExternal: Boolean) {}
             },
-            "error", false, {}
+            errorMessage = "error",
+            loadingBar = false,
+            isExternal = true,
+            showDatePicker = {},
         )
     }
 }

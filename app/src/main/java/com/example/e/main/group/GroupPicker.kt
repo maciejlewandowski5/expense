@@ -40,7 +40,7 @@ fun GroupPicker(
 ) {
     val listState = rememberLazyListState()
     val coroutineScope = rememberCoroutineScope()
-    LaunchedEffect(key1 = Unit, block = {
+    LaunchedEffect(key1 = Unit, key2 = groupCardData, block = {
         coroutineScope.launch {
             groupCardData.currentGroupIndex().let {
                 if (it > -1) {
@@ -141,7 +141,7 @@ fun AddGroupCard(addNewGroup: () -> Unit) {
                         topStart = 5.dp, topEnd = 5.dp, bottomEnd = 0.dp, bottomStart = 0.dp
                     )
                 )
-                .background(MaterialTheme.colors.surface)
+                .background(MaterialTheme.colors.background)
                 .padding(4.dp)
 
         ) {
@@ -149,7 +149,7 @@ fun AddGroupCard(addNewGroup: () -> Unit) {
                 Icon(Icons.Filled.Add, stringResource(id = R.string.addNewGroup))
                 Text(
                     text = stringResource(id = R.string.addNewGroup),
-                    color = MaterialTheme.colors.onSurface
+                    color = MaterialTheme.colors.onBackground
                 )
             }
         }

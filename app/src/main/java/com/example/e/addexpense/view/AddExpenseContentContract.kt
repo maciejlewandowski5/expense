@@ -6,4 +6,5 @@ interface AddExpenseContentContract {
     fun setTitle(newTitle: String): Unit?
     fun borrowerClick(pickedParticipant: ParticpantCardState): Unit?
     fun payerClick(pickedPayer: ParticpantCardState): Unit?
+    fun externalChanged(isExternal: Boolean): Unit?
 }

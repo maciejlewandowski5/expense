@@ -53,7 +53,8 @@ data class ExpenseResponse(
         id = id,
         title = title,
         participants = participants.toDomain(),
-        date = LocalDateTime.parse(date, DateTimeFormatter.ISO_DATE_TIME)
+        date = LocalDateTime.parse(date, DateTimeFormatter.ISO_DATE_TIME),
+        isExternal = true // TODO: Fix when real api comes
     )
 
     companion object {

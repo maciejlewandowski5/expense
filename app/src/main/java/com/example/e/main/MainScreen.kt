@@ -36,12 +36,11 @@ import kotlinx.serialization.ExperimentalSerializationApi
 @ExperimentalSerializationApi
 fun MainViewScreen(
     mainViewModel: MainViewModel,
-    navigation: MainScreenNavigationContract
+    navigation: MainScreenNavigationContract,
+
 ) {
-    val currentSpendingState by mainViewModel.currentSpending.observeAsState(
-        CurrentSpendingState.Loading
-    )
-    val expensesState by mainViewModel.expensesState.observeAsState(ExpensesState.Loading)
+    val currentSpendingState by mainViewModel.currentSpending.observeAsState(CurrentSpendingState.Loading)
+    val expensesState by mainViewModel.expensesState.observeAsState(initial = ExpensesState.Loading)
     val isSourceRemote by mainViewModel.isSourceRemote.observeAsState(false)
     val isRefreshingExpenses by mainViewModel.isRefreshingExpenses.observeAsState(false)
     val deleteTimeout by mainViewModel.deleteTimeout.observeAsState(0)
@@ -188,9 +187,19 @@ fun DefaultPreview() {
             object : MainViewContract {
                 override fun switchSource(isSourceRemote: Boolean) {}
                 override fun setCurrentGroup(accountingGroup: AccountingGroup) {}
+                override fun setCurrentGroup(index: Int) {}
+
                 override fun onRefresh() {}
                 override fun deleteExpense(expense: Expense) {}
                 override fun cancelDelete() {}
+                override fun getCurrentGroupIndex() = 0
+                override fun getPreviousGroupName(): String {
+                    TODO("Not yet implemented")
+                }
+
+                override fun getNextGroupName(): String {
+                    TODO("Not yet implemented")
+                }
             },
             object : SwitchSourceCardContract {
                 override fun switchSource(isSourceRemote: Boolean) {}

@@ -9,7 +9,8 @@ sealed class AddExpenseEffect() {
         constructor() : this(
             NewExpenseInput(
                 emptyList(), emptyList(), BigDecimal.ZERO, "",
-                LocalDateTime.now()
+                LocalDateTime.now(),
+                true
             )
         )
     }

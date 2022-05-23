@@ -1,5 +1,6 @@
 package com.example.e.addexpense
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -42,6 +43,9 @@ class AddExpenseViewModel @Inject constructor(
         MutableLiveData("")
     val title: LiveData<String> = _title
 
+    private val _isExternal: MutableLiveData<Boolean> = MutableLiveData(true)
+    val isExternal: LiveData<Boolean> = _isExternal
+
     private val _newExpenseInput: MutableLiveData<NewExpenseInput> = MutableLiveData(null)
     val newExpenseInput: LiveData<NewExpenseInput> = _newExpenseInput
 
@@ -54,6 +58,11 @@ class AddExpenseViewModel @Inject constructor(
 
     override fun payerClick(participantState: ParticpantCardState) = _payersState.value?.let {
         _payersState.value = it.switchSelection(it.getParticipant(participantState))
+    }
+
+    override fun externalChanged(isExternal: Boolean) {
+        _isExternal.value = isExternal
+        Log.d(this::class.simpleName, "isExternal set to: $isExternal")
     }
 
     override fun setTitle(title: String) = _borrowersState.value?.let { _title.value = title }
@@ -88,7 +97,7 @@ class AddExpenseViewModel @Inject constructor(
         it.remove(participant)
     }
 
-    private suspend fun tryAddExpense() = try {
+    private fun tryAddExpense() = try {
         val ne = newExpenseInput(BigDecimal.ZERO)
         _newExpenseInput.value = ne
         _addExpenseEffect.value = AddExpenseEffect.GoToSplitScreen(ne)
@@ -104,6 +113,7 @@ class AddExpenseViewModel @Inject constructor(
         amount,
         title.value!!,
         expenseDateTime.value!!,
+        isExternal.value!!
     )
 
     private fun userInputsHasNotNulls() = _borrowersState.value != null &&
@@ -111,7 +121,7 @@ class AddExpenseViewModel @Inject constructor(
         title.value != null &&
         expenseDateTime.value != null
 
-    private fun userInputsInNotEmpty() = _borrowersState.value!!.isNotEmpty() &&
-        _payersState.value!!.isNotEmpty() &&
+    private fun userInputsInNotEmpty() = _borrowersState.value!!.any { it.isSelected } &&
+        _payersState.value!!.any { it.isSelected } &&
         title.value!!.isNotEmpty()
 }

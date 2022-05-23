@@ -41,7 +41,8 @@ val sampleExpense = Expense(
         Participant(1, sampleUsers[0], BigDecimal("16.50")),
         Participant(1, sampleUsers[0], BigDecimal("16.50"))
     ),
-    date = sampleDateTime
+    date = sampleDateTime,
+    isExternal = false
 )
 
 fun sampleExpense(id: Long) = Expense(
@@ -56,7 +57,8 @@ fun sampleExpense(id: Long) = Expense(
         Participant(1, sampleUsers[0], BigDecimal("16.50")),
         Participant(1, sampleUsers[0], BigDecimal("16.50"))
     ),
-    date = sampleDateTime
+    date = sampleDateTime,
+    isExternal = false
 )
 
 val sampleExpenses = listOf(

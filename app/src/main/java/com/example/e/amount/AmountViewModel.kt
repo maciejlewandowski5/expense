@@ -44,8 +44,10 @@ class AmountViewModel @Inject constructor(private val addExpenseUseCase: AddExpe
         if (validateAmount(amount))
             try {
                 _errorMessage.value = null
+                val amount = BigDecimal(amount)
                 _proposedExpense.value =
-                    expenseInput?.let { it.copy(amount = BigDecimal(amount)).toExpense() }
+                    expenseInput?.let { it.copy(amount = amount).toExpense() }
+                expenseInput = expenseInput?.copy(amount = amount)
             } catch (e: Throwable) {
                 _errorMessage.value = "Value should be number"
             }
@@ -56,5 +58,11 @@ class AmountViewModel @Inject constructor(private val addExpenseUseCase: AddExpe
         viewModelScope.launch {
             _proposedExpense.value?.let { addExpenseUseCase.addExpense(it, _addExpenseEffect) }
         }
+    }
+
+    fun isSplitManuallyPossible(): Boolean {
+        return expenseInput?.let {
+            !(it.borrowers.filter { it.isSelected }.size == 1 && it.payers.filter { it.isSelected }.size == 1)
+        } ?: false
     }
 }

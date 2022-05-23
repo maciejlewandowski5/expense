@@ -32,7 +32,7 @@ fun SplitContent(
     borrowers: List<CustomSplitParticipant>,
     errorMessage: String?,
     loadingBar: Boolean = false,
-    leftToSplit: String,
+    leftToSplit: String?,
     setBorrowerAmount: (Participant, String) -> Unit,
     setPayerAmount: (Participant, String) -> Unit,
     createExpense: () -> Unit,
@@ -74,16 +74,23 @@ fun SplitContent(
                             horizontalArrangement = Arrangement.End,
                             modifier = Modifier.fillMaxWidth()
                         ) {
-                            Text(
-                                color = MaterialTheme.colors.onBackground,
-                                text = if (leftToSplit.startsWith("-")) stringResource(id = R.string.payersShouldPay) else {
-                                    stringResource(id = R.string.borrowesShouldBorrow)
-                                },
-                            )
-                            Text(
-                                color = MaterialTheme.colors.onBackground,
-                                text = "$leftToSplit ${stringResource(R.string.PLN)}",
-                            )
+                            if (leftToSplit != null) {
+                                Text(
+                                    color = MaterialTheme.colors.onBackground,
+                                    text = if (leftToSplit.startsWith("-")) stringResource(id = R.string.payersShouldPay) else {
+                                        stringResource(id = R.string.borrowesShouldBorrow)
+                                    },
+                                )
+                                Text(
+                                    color = MaterialTheme.colors.onBackground,
+                                    text = "${leftToSplit.removePrefix("-")} ${stringResource(R.string.PLN)}",
+                                )
+                            } else {
+                                Text(
+                                    color = MaterialTheme.colors.onBackground,
+                                    text = stringResource(id = R.string.amountSplitedCorrectly),
+                                )
+                            }
                         }
                     }
                     Column(modifier = Modifier.fillMaxHeight()) {
@@ -135,7 +142,11 @@ private fun SplitCard(
             Spacer(modifier = Modifier.height(4.dp))
         }
 
-        LazyColumn(modifier = Modifier.fillMaxHeight().defaultMinSize(minHeight = 200.dp)) {
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxHeight()
+                .defaultMinSize(minHeight = 200.dp)
+        ) {
             val shape = RoundedCornerShape(8.dp)
             items(users.size) { index ->
 
@@ -152,12 +163,12 @@ private fun SplitCard(
                     Text(
                         text = users[index].participant.user.name,
                         color = MaterialTheme.colors.onBackground,
-                        modifier = Modifier.fillMaxWidth(0.5f),
+                        modifier = Modifier.fillMaxWidth(0.2f),
                         overflow = TextOverflow.Ellipsis,
                         maxLines = 1
                     )
                     Row(
-                        Modifier.fillMaxWidth(0.5f),
+                        Modifier.fillMaxWidth(0.8f),
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.End
                     ) {

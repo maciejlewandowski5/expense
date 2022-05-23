@@ -24,6 +24,7 @@ fun AddExpenseScreen(
     val date by addExpenseViewModel.expenseDateTime.observeAsState(initial = LocalDateTime.now())
     val title by addExpenseViewModel.title.observeAsState(initial = "")
     val addExpenseEffect by addExpenseViewModel.addExpenseEffect.observeAsState(initial = null)
+    val isExternal by addExpenseViewModel.isExternal.observeAsState(initial = true)
     val (showLoadingBar, errorMessage: String?) = resolveAddExpenseEffect(
         addExpenseEffect, navigateToHome
     )
@@ -36,7 +37,8 @@ fun AddExpenseScreen(
         borrowersState = borrowersState,
         payersState = payersState,
         errorMessage = errorMessage,
-        loadingBar = showLoadingBar
+        loadingBar = showLoadingBar,
+        isExternal = isExternal
     )
 }
 
@@ -68,6 +70,7 @@ private fun AddExpenseScaffold(
     date: LocalDateTime,
     borrowersState: List<ParticpantCardState>,
     payersState: List<ParticpantCardState>,
+    isExternal: Boolean,
     errorMessage: String? = null,
     loadingBar: Boolean
 ) {
@@ -89,7 +92,8 @@ private fun AddExpenseScaffold(
                 contract = addExpenseViewModel,
                 showDatePicker = showDatePicker,
                 errorMessage = errorMessage,
-                loadingBar = loadingBar
+                loadingBar = loadingBar,
+                isExternal = isExternal
             )
         }
     )

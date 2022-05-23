@@ -28,6 +28,7 @@ import com.example.e.addexpense.model.NewExpenseInput
 import com.example.e.domain.Expense
 import com.example.e.ui.theme.debt
 import com.example.e.ui.theme.loan
+import io.iamjosephmj.flinger.bahaviours.StockFlingBehaviours
 import java.math.BigDecimal
 
 @Composable
@@ -49,7 +50,8 @@ fun AmountScreen(
         amountSet = amountViewModel::amountSet,
         proposedExpense = proposedExpense,
         splitManually = { splitManually(amountViewModel.expenseInput!!) },
-        addExpense = amountViewModel::addExpense
+        addExpense = amountViewModel::addExpense,
+        splitManuallyPossible = amountViewModel.isSplitManuallyPossible()
     )
 }
 
@@ -78,7 +80,8 @@ fun AmountScaffolding(
     amountSet: (String) -> Unit,
     proposedExpense: Expense?,
     splitManually: () -> Unit,
-    addExpense: () -> Unit
+    addExpense: () -> Unit,
+    splitManuallyPossible: Boolean
 ) {
     Scaffold(floatingActionButton = {
         FloatingActionButton(onClick = { proposedExpense?.let { addExpense() } }) {
@@ -94,7 +97,8 @@ fun AmountScaffolding(
             amount = amount,
             amountSet = amountSet,
             proposedExpense = proposedExpense,
-            splitManually = splitManually
+            splitManually = splitManually,
+            splitManuallyPossible = splitManuallyPossible
         )
     })
 }
@@ -106,12 +110,13 @@ fun AmountContent(
     amount: String,
     amountSet: (String) -> Unit,
     proposedExpense: Expense?,
+    splitManuallyPossible: Boolean,
     splitManually: () -> Unit
 ) {
     InputWrapperCard(errorMessage = errorMessage, loadingBar = loadingBar) {
         Column(
             verticalArrangement = Arrangement.spacedBy(12.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
+            horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             TextField(
                 value = amount,
@@ -129,7 +134,8 @@ fun AmountContent(
                             .shadow(elevation = 2.dp, shape)
                             .clip(shape)
                             .background(MaterialTheme.colors.surface)
-                            .padding(vertical = 24.dp, horizontal = 16.dp),
+                            .padding(vertical = 24.dp, horizontal = 16.dp)
+                            .fillMaxHeight(0.8f),
                         horizontalAlignment = Alignment.Start
                     ) {
                         Text(
@@ -137,34 +143,46 @@ fun AmountContent(
                             color = MaterialTheme.colors.onSurface,
                             style = MaterialTheme.typography.h6
                         )
-                        LazyColumn(content = {
-                            items(count = it.participants.size) { index ->
-                                val participant = it.participants[index]
-                                Text(
-                                    text = participant.user.name,
-                                    color = MaterialTheme.colors.onSurface
-                                )
-                                Text(
-                                    text = "${participant.amount.toPlainString()} PLN",
-                                    color = if (participant.amount.compareTo(
-                                            BigDecimal.ZERO
-                                        ) == 1
-                                    ) MaterialTheme.colors.loan else MaterialTheme.colors.debt
-                                )
-                                Spacer(modifier = Modifier.height(4.dp))
+                        LazyColumn(
+                            Modifier.fillMaxWidth(),
+                            flingBehavior = StockFlingBehaviours.smoothScroll(),
+                            content = {
+                                items(count = it.participants.size) { index ->
+                                    val participant = it.participants[index]
+                                    Text(
+                                        text = participant.user.name,
+                                        color = MaterialTheme.colors.onSurface
+                                    )
+                                    Text(
+                                        text = "${participant.amount.toPlainString()} PLN",
+                                        color = if (participant.amount.compareTo(
+                                                BigDecimal.ZERO
+                                            ) == 1
+                                        ) MaterialTheme.colors.loan else MaterialTheme.colors.debt
+                                    )
+                                    Spacer(modifier = Modifier.height(4.dp))
+                                }
                             }
-                        })
+                        )
                     }
                 }
             }
-            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
-                Button(onClick = { splitManually() }) {
-                    Text(
-                        text = stringResource(id = R.string.splitManually),
-                        color = MaterialTheme.colors.onPrimary,
-                        style = MaterialTheme.typography.button,
-                        textAlign = TextAlign.End
-                    )
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth(),
+                horizontalArrangement = Arrangement.Start
+            ) {
+                Crossfade(targetState = splitManuallyPossible) {
+                    if (it) {
+                        Button(onClick = { splitManually() }) {
+                            Text(
+                                text = stringResource(id = R.string.splitManually),
+                                color = MaterialTheme.colors.onPrimary,
+                                style = MaterialTheme.typography.button,
+                                textAlign = TextAlign.End
+                            )
+                        }
+                    }
                 }
             }
         }

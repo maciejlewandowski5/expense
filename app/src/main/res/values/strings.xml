@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">e</string>
     <string name="menuButtonDescription">Menu button</string>
-    <string name="currentSpendingsTitle">Group total cash flow</string>
+    <string name="currentSpendingsTitle">Group external expenses</string>
     <string name="settelmentButton">Settle</string>
     <string name="tryAgainLaterError">Something went wrong, try again later.</string>
     <string name="addNewExpense">Add new expense button</string>
@@ -35,4 +35,8 @@
     <string name="borrowesShouldBorrow">"Borrower should borrow: "</string>
     <string name="PLN">PLN</string>
     <string name="expenses">Expenses</string>
+    <string name="isExternal">Is payment outside of group the group</string>
+    <string name="internalLoan">This expense in internal loan</string>
+    <string name="zeroPLN">0 PLN</string>
+    <string name="amountSplitedCorrectly">Amount splitted correctly</string>
 </resources>

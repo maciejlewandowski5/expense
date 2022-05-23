@@ -38,7 +38,8 @@ class ExampleUnitTest {
                     amount = BigDecimal("6")
                 ),
             ),
-            date = sampleDateTime
+            date = sampleDateTime,
+            isExternal = isExternal
         )
 
         //   val result = GroupDetails.splitExpense(expense = expense)
@@ -72,7 +73,8 @@ class ExampleUnitTest {
                     amount = BigDecimal("-12")
                 ),
             ),
-            date = sampleDateTime
+            date = sampleDateTime,
+            isExternal = isExternal
         )
 
         //   val result = GroupDetails.splitExpense(expense = expense)
@@ -96,7 +98,8 @@ class ExampleUnitTest {
                     amount = BigDecimal("-5")
                 ),
             ),
-            date = sampleDateTime
+            date = sampleDateTime,
+            isExternal = isExternal
         )
 
         //   val result = GroupDetails.splitExpense(expense = expense)
@@ -150,7 +153,8 @@ class ExampleUnitTest {
                     amount = BigDecimal("-19")
                 ),
             ),
-            date = sampleDateTime
+            date = sampleDateTime,
+            isExternal = isExternal
         )
 
         //    val result = GroupDetails.splitExpense(expense = expense)
@@ -207,7 +211,8 @@ class ExampleUnitTest {
                             amount = BigDecimal("-19")
                         ),
                     ),
-                    date = sampleDateTime
+                    date = sampleDateTime,
+                    isExternal = isExternal
                 ),
                 Expense(
                     id = 1, title = "",
@@ -254,7 +259,8 @@ class ExampleUnitTest {
                             amount = BigDecimal("-19")
                         ),
                     ),
-                    date = sampleDateTime
+                    date = sampleDateTime,
+                    isExternal = isExternal
                 )
             ),
             members = listOf(

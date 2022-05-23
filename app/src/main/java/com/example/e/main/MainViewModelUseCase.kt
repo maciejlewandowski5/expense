@@ -55,6 +55,10 @@ class MainViewModelUseCase @Inject constructor(
         repositoryImpl.deleteExpense(expense, preferences.groupId())
     }
 
+    suspend fun addExpense(expense: Expense) {
+        repositoryImpl.addExpense(expense,preferences.groupId())
+    }
+
     companion object {
         const val DEFAULT_GROUP = "DEFAULT_GROUP"
     }

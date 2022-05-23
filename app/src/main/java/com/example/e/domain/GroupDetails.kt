@@ -15,7 +15,7 @@ data class GroupDetails(
     val members: List<User>
 ) : DomainModel {
     fun toHeaderCardData(groups: List<AccountingGroup>) = HeaderCardData(
-        expenses.sumOf { it.totalAmount() }, DEFAULT_CURRENCY,
+        expenses.sumOf { it.internalTotalAmount() }, DEFAULT_CURRENCY,
         GroupCardData(groups, accountingGroup.id)
     )
 
@@ -38,6 +38,7 @@ data class GroupDetails(
         title = payOffText + participantsInPayOf.map { it.user.name }
             .reduce { acc, s -> "$acc, $s" },
         participants = participantsInPayOf,
-        date = LocalDateTime.now(clock)
+        date = LocalDateTime.now(clock),
+        isExternal = false
     )
 }

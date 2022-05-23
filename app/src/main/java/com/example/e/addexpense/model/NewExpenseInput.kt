@@ -57,12 +57,14 @@ data class NewExpenseInput(
     val title: String,
     @Serializable(with = DateSerializer::class)
     val date: LocalDateTime,
+    val isExternal: Boolean
 ) {
     fun toExpense() = Expense(
         id = DEFAULT_ID_FOR_AUTOGENERATE,
         title = title,
         participants = asParticipants(),
-        date = date
+        date = date,
+        isExternal = isExternal
     )
 
     private fun asParticipants() =
@@ -84,6 +86,7 @@ data class NewExpenseInput(
             id = DEFAULT_ID_FOR_AUTOGENERATE,
             title = title,
             participants = borrowers + payers,
-            date = date
+            date = date,
+            isExternal = isExternal
         )
 }

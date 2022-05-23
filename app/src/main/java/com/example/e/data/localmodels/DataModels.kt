@@ -4,7 +4,6 @@ import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import androidx.room.Relation
-import com.example.e.data.ParticipantModel.Companion.toDomain
 import com.example.e.domain.*
 import java.math.BigDecimal
 import java.time.Clock
@@ -16,13 +15,15 @@ data class ExpenseModel(
     val id: Long,
     val title: String,
     val expanseDate: LocalDateTime?,
-    val accountingGroupId: Long
+    val accountingGroupId: Long,
+    val isExternal: Boolean
 ) {
     fun toDomain(participants: List<Participant>, clock: Clock) = Expense(
         id = id,
         title = title,
         participants = participants,
-        date = expanseDate ?: LocalDateTime.now(clock)
+        date = expanseDate ?: LocalDateTime.now(clock),
+        isExternal = isExternal
     )
 }
 

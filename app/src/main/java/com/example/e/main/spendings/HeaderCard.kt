@@ -7,7 +7,6 @@ import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -19,7 +18,6 @@ import com.example.e.main.MainViewContract
 import com.example.e.source.SwitchSourceCard
 import com.example.e.source.SwitchSourceCardContract
 import com.example.e.ui.theme.ETheme
-import com.example.e.ui.theme.Shapes
 
 @Composable
 fun HeaderCard(
@@ -81,12 +79,19 @@ fun DefaultPreview() {
             object : MainViewContract {
                 override fun switchSource(isSourceRemote: Boolean) {}
                 override fun setCurrentGroup(accountingGroup: AccountingGroup) {}
+                override fun setCurrentGroup(index: Int) {}
+
                 override fun onRefresh() {}
-                override fun deleteExpense(expense: Expense): Unit? {
+                override fun deleteExpense(expense: Expense) {}
+
+                override fun cancelDelete() {}
+
+                override fun getCurrentGroupIndex(): Int = 0
+                override fun getPreviousGroupName(): String {
                     TODO("Not yet implemented")
                 }
 
-                override fun cancelDelete(): Unit? {
+                override fun getNextGroupName(): String {
                     TODO("Not yet implemented")
                 }
             },
@@ -120,12 +125,16 @@ fun LoadingPreview() {
             object : MainViewContract {
                 override fun switchSource(isSourceRemote: Boolean) {}
                 override fun setCurrentGroup(accountingGroup: AccountingGroup) {}
+                override fun setCurrentGroup(index: Int) {}
                 override fun onRefresh() {}
-                override fun deleteExpense(expense: Expense): Unit? {
+                override fun deleteExpense(expense: Expense) {}
+                override fun cancelDelete() {}
+                override fun getCurrentGroupIndex(): Int = 1
+                override fun getPreviousGroupName(): String {
                     TODO("Not yet implemented")
                 }
 
-                override fun cancelDelete(): Unit? {
+                override fun getNextGroupName(): String {
                     TODO("Not yet implemented")
                 }
             },
@@ -158,12 +167,16 @@ fun ErrorPreview() {
             object : MainViewContract {
                 override fun switchSource(isSourceRemote: Boolean) {}
                 override fun setCurrentGroup(accountingGroup: AccountingGroup) {}
+                override fun setCurrentGroup(index: Int) {}
                 override fun onRefresh() {}
-                override fun deleteExpense(expense: Expense): Unit? {
+                override fun deleteExpense(expense: Expense) {}
+                override fun cancelDelete() {}
+                override fun getCurrentGroupIndex(): Int = 1
+                override fun getPreviousGroupName(): String {
                     TODO("Not yet implemented")
                 }
 
-                override fun cancelDelete(): Unit? {
+                override fun getNextGroupName(): String {
                     TODO("Not yet implemented")
                 }
             },

@@ -12,8 +12,20 @@ data class Expense(
     val id: Long,
     val title: String,
     val participants: List<Participant>,
-    val date: LocalDateTime
+    val date: LocalDateTime,
+    val isExternal: Boolean
 ) : DomainModel {
+    fun internalTotalAmount(): BigDecimal =
+        participants.map { it.amount }.fold(BigDecimal.ZERO) { acc, amount ->
+            acc.add(
+                if (amount > BigDecimal.ZERO && isExternal) {
+                    amount
+                } else {
+                    BigDecimal.ZERO
+                }
+            )
+        }
+
     fun totalAmount(): BigDecimal =
         participants.map { it.amount }.fold(BigDecimal.ZERO) { acc, amount ->
             acc.add(
@@ -26,7 +38,13 @@ data class Expense(
         }
 
     fun toExpenseModel(groupId: GroupId): ExpenseModel =
-        ExpenseModel(id = id, title = title, expanseDate = date, accountingGroupId = groupId.value)
+        ExpenseModel(
+            id = id,
+            title = title,
+            expanseDate = date,
+            accountingGroupId = groupId.value,
+            isExternal = isExternal
+        )
 
     companion object {
 
@@ -49,7 +67,7 @@ data class Expense(
         debtors.forEach { debtor ->
             loaners.forEach loanerLoop@{ loaner ->
                 it.payDebt(debtor, loaner, debtors, loaners, clock)
-                if (debtIsPayedOff(debtor)) {
+                if (debtIsPayedOff(loaner)) {
                     return@loanerLoop
                 }
             }
@@ -79,6 +97,7 @@ data class Expense(
             else -> {
                 val payedAmountInTransaction = debtor.value
                 loaners.replace(loaner.key, loaner.value.minus(debtor.value))
+                debtors.replace(debtor.key, BigDecimal.ZERO)
                 payedAmountInTransaction
             }
         }
@@ -107,7 +126,8 @@ data class Expense(
                     amount = payedAmountInTransaction.changeSign()
                 )
             ),
-            date = LocalDateTime.now(clock)
+            date = LocalDateTime.now(clock),
+            isExternal = false
         )
     )
 

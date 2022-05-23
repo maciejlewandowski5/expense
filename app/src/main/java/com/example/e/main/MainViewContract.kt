@@ -9,4 +9,8 @@ interface MainViewContract {
     fun onRefresh(): Unit?
     fun deleteExpense(expense: Expense): Unit?
     fun cancelDelete(): Unit?
+    fun setCurrentGroup(index: Int): Unit?
+    fun getCurrentGroupIndex(): Int
+    fun getPreviousGroupName(): String
+    fun getNextGroupName(): String
 }
